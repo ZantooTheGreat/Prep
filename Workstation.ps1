@@ -1,264 +1,196 @@
 #############################################
 #                                           #
-#                                           #
 # IF YOU WANT TO MAKE CHANGES TO THIS FILE  #
 # PLEASE MAKE A COPY AND EDIT THAT          #
 # DONT MAKE CHANGES TO THE ORIGINAL WITHOUT #
 # MANAGEMENT CONSENT.                       #
 #                                           #
-#                                           #
 #############################################
-
-$global:startmenu = @"
-<LayoutModificationTemplate Version="1" xmlns="http://schemas.microsoft.com/Start/2014/LayoutModification" xmlns:defaultlayout="http://schemas.microsoft.com/Start/2014/FullDefaultLayout" xmlns:start="http://schemas.microsoft.com/Start/2014/StartLayout" xmlns:taskbar="http://schemas.microsoft.com/Start/2014/TaskbarLayout">
-<LayoutOptions StartTileGroupCellWidth="6" />
-<DefaultLayoutOverride>
- <StartLayoutCollection>
-   <defaultlayout:StartLayout GroupCellWidth="6" xmlns:defaultlayout="http://schemas.microsoft.com/Start/2014/FullDefaultLayout">
-   </defaultlayout:StartLayout>
- </StartLayoutCollection>
-</DefaultLayoutOverride>
-<CustomTaskbarLayoutCollection PinListPlacement="Replace">
- <defaultlayout:TaskbarLayout>
-   <taskbar:TaskbarPinList>
-     <taskbar:DesktopApp DesktopApplicationLinkPath="%APPDATA%\Microsoft\Windows\Start Menu\Programs\System Tools\File Explorer.lnk" />
-     <taskbar:DesktopApp DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\Google Chrome.lnk" />
-     <taskbar:DesktopApp DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\Word.lnk" />
-     <taskbar:DesktopApp DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\Excel.lnk" />
-     <taskbar:DesktopApp DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\Outlook.lnk" />
-   </taskbar:TaskbarPinList>
- </defaultlayout:TaskbarLayout>
-</CustomTaskbarLayoutCollection>
-</LayoutModificationTemplate>
-"@
-
-$global:office = @"
-<Configuration>
-  <Add OfficeClientEdition="32">
-    <Product ID="O365BusinessRetail">
-      <Language ID="en-us" />
-      <ExcludeApp ID="Teams" />
-    </Product>
-  </Add>  
-</Configuration>
-"@
-
-$global:DefaultAssociations = @"
-<?xml version="1.0" encoding="UTF-8"?>
-<DefaultAssociations>
-  <Association Identifier=".3mf" ProgId="AppXr0rz9yckydawgnrx5df1t9s57ne60yhn" ApplicationName="Print 3D" />
-  <Association Identifier=".arw" ProgId="AppX43hnxtbyyps62jhe9sqpdzxn1790zetc" ApplicationName="Photos" />
-  <Association Identifier=".bmp" ProgId="AppX43hnxtbyyps62jhe9sqpdzxn1790zetc" ApplicationName="Photos" />
-  <Association Identifier=".cr2" ProgId="AppX43hnxtbyyps62jhe9sqpdzxn1790zetc" ApplicationName="Photos" />
-  <Association Identifier=".crw" ProgId="AppX43hnxtbyyps62jhe9sqpdzxn1790zetc" ApplicationName="Photos" />
-  <Association Identifier=".dib" ProgId="AppX43hnxtbyyps62jhe9sqpdzxn1790zetc" ApplicationName="Photos" />
-  <Association Identifier=".epub" ProgId="AppXvepbp3z66accmsd0x877zbbxjctkpr6t" ApplicationName="Microsoft Edge" />
-  <Association Identifier=".erf" ProgId="AppX43hnxtbyyps62jhe9sqpdzxn1790zetc" ApplicationName="Photos" />
-  <Association Identifier=".fbx" ProgId="AppXmgw6pxxs62rbgfp9petmdyb4fx7rnd4k" ApplicationName="3D Viewer" />
-  <Association Identifier=".gif" ProgId="AppX43hnxtbyyps62jhe9sqpdzxn1790zetc" ApplicationName="Photos" />
-  <Association Identifier=".glb" ProgId="AppXmgw6pxxs62rbgfp9petmdyb4fx7rnd4k" ApplicationName="3D Viewer" />
-  <Association Identifier=".gltf" ProgId="AppXmgw6pxxs62rbgfp9petmdyb4fx7rnd4k" ApplicationName="3D Viewer" />
-  <Association Identifier=".htm" ProgId="ChromeHTML" ApplicationName="Google Chrome" />
-  <Association Identifier=".html" ProgId="ChromeHTML" ApplicationName="Google Chrome" />
-  <Association Identifier=".jfif" ProgId="AppX43hnxtbyyps62jhe9sqpdzxn1790zetc" ApplicationName="Photos" />
-  <Association Identifier=".jpe" ProgId="AppX43hnxtbyyps62jhe9sqpdzxn1790zetc" ApplicationName="Photos" />
-  <Association Identifier=".jpeg" ProgId="AppX43hnxtbyyps62jhe9sqpdzxn1790zetc" ApplicationName="Photos" />
-  <Association Identifier=".jpg" ProgId="AppX43hnxtbyyps62jhe9sqpdzxn1790zetc" ApplicationName="Photos" />
-  <Association Identifier=".jxr" ProgId="AppX43hnxtbyyps62jhe9sqpdzxn1790zetc" ApplicationName="Photos" />
-  <Association Identifier=".kdc" ProgId="AppX43hnxtbyyps62jhe9sqpdzxn1790zetc" ApplicationName="Photos" />
-  <Association Identifier=".MP2" ProgId="WMP11.AssocFile.MP3" ApplicationName="Windows Media Player" />
-  <Association Identifier=".mrw" ProgId="AppX43hnxtbyyps62jhe9sqpdzxn1790zetc" ApplicationName="Photos" />
-  <Association Identifier=".nef" ProgId="AppX43hnxtbyyps62jhe9sqpdzxn1790zetc" ApplicationName="Photos" />
-  <Association Identifier=".nrw" ProgId="AppX43hnxtbyyps62jhe9sqpdzxn1790zetc" ApplicationName="Photos" />
-  <Association Identifier=".obj" ProgId="AppXmgw6pxxs62rbgfp9petmdyb4fx7rnd4k" ApplicationName="3D Viewer" />
-  <Association Identifier=".orf" ProgId="AppX43hnxtbyyps62jhe9sqpdzxn1790zetc" ApplicationName="Photos" />
-  <Association Identifier=".pdf" ProgId="AcroExch.Document.DC" ApplicationName="Adobe Acrobat Reader DC" />
-  <Association Identifier=".pef" ProgId="AppX43hnxtbyyps62jhe9sqpdzxn1790zetc" ApplicationName="Photos" />
-  <Association Identifier=".ply" ProgId="AppXmgw6pxxs62rbgfp9petmdyb4fx7rnd4k" ApplicationName="3D Viewer" />
-  <Association Identifier=".png" ProgId="AppX43hnxtbyyps62jhe9sqpdzxn1790zetc" ApplicationName="Photos" />
-  <Association Identifier=".raf" ProgId="AppX43hnxtbyyps62jhe9sqpdzxn1790zetc" ApplicationName="Photos" />
-  <Association Identifier=".raw" ProgId="AppX43hnxtbyyps62jhe9sqpdzxn1790zetc" ApplicationName="Photos" />
-  <Association Identifier=".rw2" ProgId="AppX43hnxtbyyps62jhe9sqpdzxn1790zetc" ApplicationName="Photos" />
-  <Association Identifier=".rwl" ProgId="AppX43hnxtbyyps62jhe9sqpdzxn1790zetc" ApplicationName="Photos" />
-  <Association Identifier=".sr2" ProgId="AppX43hnxtbyyps62jhe9sqpdzxn1790zetc" ApplicationName="Photos" />
-  <Association Identifier=".srw" ProgId="AppX43hnxtbyyps62jhe9sqpdzxn1790zetc" ApplicationName="Photos" />
-  <Association Identifier=".stl" ProgId="AppXr0rz9yckydawgnrx5df1t9s57ne60yhn" ApplicationName="Print 3D" />
-  <Association Identifier=".tif" ProgId="PhotoViewer.FileAssoc.Tiff" ApplicationName="Windows Photo Viewer" />
-  <Association Identifier=".tiff" ProgId="PhotoViewer.FileAssoc.Tiff" ApplicationName="Windows Photo Viewer" />
-  <Association Identifier=".txt" ProgId="txtfile" ApplicationName="Notepad" />
-  <Association Identifier=".url" ProgId="IE.AssocFile.URL" ApplicationName="Internet Browser" />
-  <Association Identifier=".wdp" ProgId="AppX43hnxtbyyps62jhe9sqpdzxn1790zetc" ApplicationName="Photos" />
-  <Association Identifier=".website" ProgId="IE.AssocFile.WEBSITE" ApplicationName="Internet Explorer" />
-  <Association Identifier="bingmaps" ProgId="AppXp9gkwccvk6fa6yyfq3tmsk8ws2nprk1p" ApplicationName="Maps" />
-  <Association Identifier="http" ProgId="ChromeHTML" ApplicationName="Google Chrome" />
-  <Association Identifier="https" ProgId="ChromeHTML" ApplicationName="Google Chrome" />
-  <Association Identifier="mailto" ProgId="Outlook.URL.mailto.15" ApplicationName="Outlook" />
-</DefaultAssociations>
-"@
-
-$global:Remove = @"
-<Configuration>
-<Remove All="TRUE"/>
-<Display Level="None" AcceptEULA="TRUE"/>
-</Configuration>
-"@
-
+# Variables
+$global:PCNameSuffix = (get-ciminstance -ClassName Win32_ComputerSystemProduct | Select-Object -ExpandProperty IdentifyingNumber)
+#PC Name container
+$global:FullPCName = "$global:DivisionName - $global:PCNameSuffix"
 # Rename PC
-function Prep-PC-Name ($PCName){Rename-Computer -NewName "$PCName"}
-# Create User
-function Prep-PC-User ($UserName, $UserPass){
-    Write-Verbose "Creating new local users" -Verbose
-    Start-Sleep -Seconds 10
-    Write-Verbose "Creating User $UserName" -Verbose
-    New-LocalUser -Name "$UserName" -Password $UserPass -PasswordNeverExpires -UserMayNotChangePassword
-    Add-LocalGroupMember -Group "Administrators" -Member "$UserName"
+function Prep-PC-Name ($global:FullPCName){
+    Rename-Computer -NewName "$global:FullPCName"
 }
 # PC Prep
 function Prep-PC {
-    # Popup
-    #$shell = new-object -comobject "WScript.Shell"
-    #$choice = $shell.popup("Insert question here",0,"Popup window title",4+32)
-
-    # Create onsys directory and hide it from muggles
-    Write-Host "Creating directories..." -ForegroundColor Yellow
-    New-Item -Path "C:\onsys" -ItemType Directory
-
-    # Create XML files for various settings
-    New-Item -Path C:\startlayout.xml -ItemType File
-    Add-Content -Path C:\startlayout.xml $global:startmenu
-
-    New-Item -Path C:\DefaultAssociations.xml -ItemType File
-    Add-Content -Path C:\DefaultAssociations.xml $global:DefaultAssociations
-
-    New-Item -Path C:\Remove.xml -ItemType File
-    Add-Content -Path C:\Remove.xml $global:RemoveXML
-
-    New-Item -Path C:\Setup.xml -ItemType File
-    Add-Content -Path C:\Setup.xml $global:office
-    attrib +s +h "C:\onsys"
-
+    # Create Admin directory and hide it from muggles
+            Write-Host "Creating directories..." -ForegroundColor Yellow
+            New-Item -Path "C:\Admin" -ItemType Directory
+            attrib +s +h "C:\Admin"
+            Copy-Item -Force "J:\Approved Installers\BGInfo\Settings_Alt.bgi" -Destination "C:\Admin\"
+            cd C:\Admin
     # Install WinGet
-    # Check if WinGet is installed
-        If (Test-Path ~\AppData\Local\Microsoft\WindowsApps\winget.exe){'Winget Already Installed'}
-    # Installing winget from the Microsoft Store
         Write-Host "Installing Winget... Please Wait"
-        Start-Process "ms-appinstaller:?source=https://aka.ms/getwinget"
+        Start-Process "ms-appinstaller:?source=https://www.microsoft.com/store/productId/9NBLGGH4NNS1"
         $nid = (Get-Process AppInstaller).Id
         Wait-Process -Id $nid
         Write-Host Winget Installed
         Write-Host "Winget Installed - Ready for Next Task"
-    Start-Sleep -Seconds 2
-
+        Start-Sleep -Seconds 2
+    # Chocolatey
+            Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
     # Disable UAC
-    Set-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System -Name ConsentPromptBehaviorAdmin -Type DWord -Value 0
-    Set-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System -Name EnableLUA -Type DWord -Value 0
-    Write-Verbose "Disabled UAC" -Verbose
-
+        Set-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System -Name ConsentPromptBehaviorAdmin -Type DWord -Value 0
+        Set-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System -Name EnableLUA -Type DWord -Value 0
+        Write-Verbose "Disabled UAC" -Verbose
     # Disable Firewall
-    Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
-    Write-Verbose "Disabled Firewall" -Verbose
-
+        Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
+        Write-Verbose "Disabled Firewall" -Verbose
     # Enable RDP
-    Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Terminal Server" -name "fDenyTSConnections" -Value 0
-    Write-Verbose "RDP Enabled" -Verbose
+        Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Terminal Server" -name "fDenyTSConnections" -Value 0
+        Write-Verbose "RDP Enabled" -Verbose
+    #
 
-    # Set Power Plan to High Performance
-    powercfg /s 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
-    # hibernate off
-    powercfg -h off
-    # Specifies the new value, in minutes.
-    powercfg /CHANGE monitor-timeout-ac 240
-    powercfg /CHANGE monitor-timeout-dc 10
-    powercfg /CHANGE disk-timeout-ac 0
-    powercfg /CHANGE disk-timeout-dc 0
-    powercfg /Change standby-timeout-ac 0
-    powercfg /Change standby-timeout-dc 20
-    # To disable selective suspend on plugged in laptops/desktops:
-    Powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 2a737441-1930-4402-8d77-b2bebba308a3 48e6b7a6-50f5-4782-a5d4-53bb8f07e226 0
-    Powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 2a737441-1930-4402-8d77-b2bebba308a3 48e6b7a6-50f5-4782-a5d4-53bb8f07e226 0
-    # To set power button action on laptops/desktops (0=Do nothing - 1=Sleep - 2=Hibernate - 3=Shut down - 4=Turn off the display):
-    powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 4f971e89-eebd-4455-a8de-9e59040e7347 7648efa3-dd9c-4e3e-b566-50f929386280 2
-    powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 4f971e89-eebd-4455-a8de-9e59040e7347 7648efa3-dd9c-4e3e-b566-50f929386280 2
-    # To set lid close action on laptops (0=Do nothing - 1=Sleep - 2=Hibernate - 3=Shut down):
-    powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 4f971e89-eebd-4455-a8de-9e59040e7347 5ca83367-6e45-459f-a27b-476b1d01c936 0
-    powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 4f971e89-eebd-4455-a8de-9e59040e7347 5ca83367-6e45-459f-a27b-476b1d01c936 0
 
-    # Disable IPv6
-    Get-NetAdapter | ForEach-Object {Disable-NetAdapterBinding -InterfaceAlias $_.Name -ComponentID ms_tcpip6}
     
+    # Power settings
+        # Set Power Plan to High Performance
+            powercfg /s 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
+        # hibernate off
+            powercfg -h off
+        # Specifies the new value, in minutes.
+            powercfg /CHANGE monitor-timeout-ac 240
+            powercfg /CHANGE monitor-timeout-dc 10
+            powercfg /CHANGE disk-timeout-ac 0
+            powercfg /CHANGE disk-timeout-dc 0
+            powercfg /Change standby-timeout-ac 0
+            powercfg /Change standby-timeout-dc 20
+        # Disable selective suspend on plugged in laptops/desktops:
+            Powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 2a737441-1930-4402-8d77-b2bebba308a3 48e6b7a6-50f5-4782-a5d4-53bb8f07e226 0
+            Powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 2a737441-1930-4402-8d77-b2bebba308a3 48e6b7a6-50f5-4782-a5d4-53bb8f07e226 0
+        # Set power button action on laptops/desktops (0=Do nothing - 1=Sleep - 2=Hibernate - 3=Shut down - 4=Turn off the display):
+            powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 4f971e89-eebd-4455-a8de-9e59040e7347 7648efa3-dd9c-4e3e-b566-50f929386280 3
+            powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 4f971e89-eebd-4455-a8de-9e59040e7347 7648efa3-dd9c-4e3e-b566-50f929386280 3
+        # Set lid close action on laptops (0=Do nothing - 1=Sleep - 2=Hibernate - 3=Shut down):
+            powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 4f971e89-eebd-4455-a8de-9e59040e7347 5ca83367-6e45-459f-a27b-476b1d01c936 0
+            powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 4f971e89-eebd-4455-a8de-9e59040e7347 5ca83367-6e45-459f-a27b-476b1d01c936 0
     # Disable automatic setup of network devices
-    If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\NcdAutoSetup\Private")){
-        New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\NcdAutoSetup\Private" -Force | Out-Null}
-	    Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\NcdAutoSetup\Private" -Name "AutoSetup" -Type DWord -Value 0
-
+        If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\NcdAutoSetup\Private")){
+            New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\NcdAutoSetup\Private" -Force | Out-Null}
+            Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\NcdAutoSetup\Private" -Name "AutoSetup" -Type DWord -Value 0
     # Remove TEAMS system wide installer
-        Start-Process MsiExec.exe -ArgumentList '/X{39AF0813-FA7B-4860-ADBE-93B9B214B914} /qn' -Wait
-        Start-Process MsiExec.exe -ArgumentList '/X{731F6BAA-A986-45A4-8936-7C3AAAAA760B} /qn' -Wait
-
-
-    $StartLayoutPath = Test-Path -Path ".\startlayout.xml"
-    If($StartLayoutPath -eq $true){Import-Startlayout -layoutpath .\startlayout.xml -mountpath $Env:SYSTEMDRIVE\}
-    ElseIf($StartLayoutPath -eq $false){Import-StartLayout -LayoutPath C:\startlayout.xml -MountPath $Env:SYSTEMDRIVE}
+            Start-Process MsiExec.exe -ArgumentList '/X{39AF0813-FA7B-4860-ADBE-93B9B214B914} /qn' -Wait
+            Start-Process MsiExec.exe -ArgumentList '/X{731F6BAA-A986-45A4-8936-7C3AAAAA760B} /qn' -Wait
+    #Disable scheduled defrags
+        schtasks /Change /DISABLE /TN "\Microsoft\Windows\Defrag\ScheduledDefrag"
 }
-function Prep-Laptop {
-    # Disable UAC
-    Set-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System -Name ConsentPromptBehaviorAdmin -Type DWord -Value 0
-    Set-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System -Name EnableLUA -Type DWord -Value 0
-    Write-Verbose "Disabled UAC" -Verbose
-    # Disable Firewall
-    Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
-    Write-Verbose "Disabled Firewall" -Verbose
-    # Enable RDP
-    Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Terminal Server" -name "fDenyTSConnections" -Value 0
-    Write-Verbose "RDP Enabled" -Verbose
-    # Disable IPv6
-    Get-NetAdapter | ForEach-Object {Disable-NetAdapterBinding -InterfaceAlias $_.Name -ComponentID ms_tcpip6}
-    
-    # Disable automatic setup of network devices
-    If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\NcdAutoSetup\Private")) {
-		New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\NcdAutoSetup\Private" -Force | Out-Null}
-	    Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\NcdAutoSetup\Private" -Name "AutoSetup" -Type DWord -Value 0
+#Tablet prep script as function
+function Prep-Tablet {
+  [cmdletbinding(SupportsShouldProcess)]
+  [alias("iwg")]
+  [OutputType("None")]
+  [OutputType("Microsoft.Windows.Appx.PackageManager.Commands.AppxPackage")]
+  Param(
+      [Parameter(HelpMessage = "Display the AppxPackage after installation.")]
+      [switch]$Passthru)
+  
+  Write-Verbose "[$((Get-Date).TimeofDay)] Starting $($myinvocation.mycommand)"
+  # Domain Join
+    wmic computersystem where name="$ENV:COMPUTERNAME" call joindomainorworkgroup fjoinoptions=3 name="liftsafeinspect" username="liftsafeinspect\administrator" Password="LgocAdmin2430!"
+  # Enable RDP
+    Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+    Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -name "fDenyTSConnections" -value 0
+  # Add Domain Users to Local Admin
+    Add-LocalGroupMember -Group Administrators -Member "$env:USERDNSDOMAIN\Domain Users"
+    Write-Host "Domain Users added to Local Admins"
+  # Install WinGet
+    # Install the latest package from GitHub
+    # Check PS Version
+    If ($PSVersionTable.PSVersion.Major -eq 7) {Write-Warning "This command does not work in PowerShell 7. You must install in Windows PowerShell."
+    Return}
+    # Test for requirement
+    $Requirement = Get-AppPackage "Microsoft.DesktopAppInstaller"
+        If (-Not $requirement) {Write-Verbose "Installing Desktop App Installer requirement"
+        Try {Add-AppxPackage -Path "https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx" -erroraction Stop}
+        Catch {Throw $_}}
+    $uri = "https://api.github.com/repos/microsoft/winget-cli/releases"
 
-    # Remove TEAMS system wide installer
-    Start-Process MsiExec.exe -ArgumentList '/X{39AF0813-FA7B-4860-ADBE-93B9B214B914} /qn' -Wait
-    Start-Process MsiExec.exe -ArgumentList '/X{731F6BAA-A986-45A4-8936-7C3AAAAA760B} /qn' -Wait
+    Try {Write-Verbose "[$((Get-Date).TimeofDay)] Getting information from $uri"
+    $get = Invoke-RestMethod -uri $uri -Method Get -ErrorAction stop
+        Write-Verbose "[$((Get-Date).TimeofDay)] getting latest release"
+        #$data = $get | Select-Object -first 1
+        $data = $get[0].assets | Where-Object name -Match 'msixbundle'
 
-    # Clear Start Menu for new users
-    import-startlayout -layoutpath .\startlayout.xml -mountpath $Env:SYSTEMDRIVE\
+        $appx = $data.browser_download_url
+        #$data.assets[0].browser_download_url
+        Write-Verbose "[$((Get-Date).TimeofDay)] $appx"
+        If ($pscmdlet.ShouldProcess($appx, "Downloading asset")) {
+        $file = Join-Path -path $env:temp -ChildPath $data.name
+        Write-Verbose "[$((Get-Date).TimeofDay)] Saving to $file"
+        Invoke-WebRequest -Uri $appx -UseBasicParsing -DisableKeepAlive -OutFile $file
+        Write-Verbose "[$((Get-Date).TimeofDay)] Adding Appx Package"
+        Add-AppxPackage -Path $file -ErrorAction Stop
+        If ($passthru) {Get-AppxPackage microsoft.desktopAppInstaller}}} 
+    #Try
+        Catch {
+        Write-Verbose "[$((Get-Date).TimeofDay)] There was an error."
+        Throw $_}
+        Write-Verbose "[$((Get-Date).TimeofDay)] Ending $($myinvocation.mycommand)"
+
+  # Install Chocolatey
+    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+  # Whitelist G10 directory (Deprecated but relevant where 2.13 is requested)
+    Set-MpPreference -ExclusionPath "C:\Users\$ENV:USERNAME\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\STYLUSOFT INC\"
+  # Improve touch sensitivity
+    Set-ItemProperty -Path 'HKLM:\Software\Microsoft\TouchPrediction' -Name 'Latency' -Value 2
+
+  <#Tablet Apps#>
+      # SQL64CE
+      Copy-Item -Force "J:\Approved Installers\Tablet Setup\SQLCEv4x64.exe" -Destination "C:\Admin\G10\"
+      # G10 2.20
+      Copy-Item -Force "J:\Approved Installers\Tablet Setup\G10 Tablet 2.20.exe" -Destination "C:\Admin\G10\"
+      # BGInfo
+      Copy-Item -Force "J:\Approved Installers\Tablet Setup\Bginfo64.exe" -Destination "C:\Admin\G10\"
+      # BGInfo Config
+      Copy-Item -Force "J:\Approved Installers\Tablet Setup\Settings.bgi" -Destination "C:\Admin\G10\"
+      # LGOC Wallpaper
+      Copy-Item -Force "J:\Approved Installers\Tablet Setup\LGOCWallpaper1920.jpg" -Destination "C:\Admin\G10\"
+      # Pulseway Agent
+      Copy-Item -Force "J:\Approved Installers\Tablet Setup\LESGC Tablets.msi" -Destination "C:\Admin\G10\"
+  
+  <# Application Installs #>
+      # Install BGInfo with settings
+      bginfo c:\admin\g10\settings.bgi /timer:0 /nolicprompt
+      # Install SQL software
+      Start-Process -FilePath "C:\Admin\G10\SQLCEv4x64.exe" -Wait
+      # Install G10 
+      Start-Process -FilePath "C:\Admin\G10\G10 Tablet 2.20.exe" -Wait
+      # Install Pulseway Agent
+      Start-Process -FilePath "C:\Admin\G10\LESGC Tablets.msi" -Wait
 }
-
-# User Prep
+# Local User as Admin
 function Prep-Users-Localadmin {
     Add-LocalGroupMember -Group Administrators -Member "$env:USERDNSDOMAIN\Domain Users"
 }
+# Prep User experience
 function Prep-User {
-
     #Get-AppxPackage * | Remove-AppxPackage
     Write-Verbose "Removed windows apps"
-
     Get-AppXPackage -allusers Microsoft.Microsoft3DViewer | Remove-AppxPackage
     Get-AppXPackage -allusers Microsoft.WindowsAlarms | Remove-AppxPackage
     Get-AppXPackage -allusers Microsoft.WindowsFeedbackhub | Remove-AppxPackage
-    Get-AppXPackage -allusers Microsoft.Office.OneNote | Remove-AppxPackage
     Get-AppXPackage -allusers Microsoft.OfficeHub | Remove-AppxPackage
     Get-AppXPackage -allusers Microsoft.GetHelp | Remove-AppxPackage
     Get-AppXPackage -allusers Microsoft.GetStarted | Remove-AppxPackage
     Get-AppXPackage -allusers Microsoft.GetHelp | Remove-AppxPackage
     Get-AppXPackage -allusers Microsoft.MixedReality.Portal | Remove-AppxPackage
     Get-AppXPackage -allusers Microsoft.WindowsMaps | Remove-AppxPackage
-    Get-AppXPackage -allusers Microsoft.SkypeApp | Remove-AppxPackage
     Get-AppXPackage -allusers Microsoft.People | Remove-AppxPackage
     Get-AppXPackage -allusers Microsoft.BingWeather | Remove-AppxPackage
-
+    Get-AppXPackage -allusers Microsoft.ZuneMusic | Remove-AppxPackage
+    Get-AppXPackage -allusers Microsoft.ZuneVideo | Remove-AppxPackage
+    Get-AppxPackage -allusers Microsoft.Office.OneNote | Remove-AppxPackage
+    Get-AppxPackage -allusers Microsoft.MicrosoftOfficeHub | Remove-AppxPackage
     # Prevent reinstall of default apps with new user
-    Get-AppXProvisionedPackage -Online | Remove-AppxProvisionedPackage -Online
-    
+	Get-AppXProvisionedPackage -Online | Remove-AppxProvisionedPackage -Online
     Clear-Host
     # Start Menu: Disable Bing Search Results
     Set-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search -Name BingSearchEnabled -Type DWord -Value 0
     # Change Explorer home screen back to "This PC"
     Set-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced -Name LaunchTo -Type DWord -Value 1
-    #Write-Verbose "Changed windows explorer from Quick Access to This PC" -Verbose
     # Hide Cortana Search
     Set-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search -Name SearchboxTaskbarMode -Type DWord -Value 0
     # Remove TaskView button from taskbar
@@ -267,47 +199,29 @@ function Prep-User {
     Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People -Name PeopleBand -Type DWord -Value 0
     # Remove Suggestions from Start Menu
     Set-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager -Name SystemPaneSuggestionsEnabled -Type DWord -Value 0
+    # Disable preinstalled apps
+    Set-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager -Name PreInstalledAppsEnabled -Type DWord -Value 0
     # Disable Silent Install Store Apps
     Set-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager -Name SilentInstalledAppsEnabled -Type DWord -Value 0
     # Disable Subscribed Content Apps
     Set-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager -Name SubscribedContent-338388Enabled -Type DWord -Value 0
+    Set-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager -Name SubscribedContent-338389Enabled -Type DWord -Value 0
     # Remove Meet Now Button
     Set-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer -Name HideSCAMeetNow -Value 1
     # Remove News/Weather Icon from taskbar
     Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Feeds -Name ShellFeedsTaskbarViewMode -Value 2
-
     # Set Time Zone
     Set-TimeZone -Name "Eastern Standard Time"
-    # Set the locale for the region and language
-    #Get-WinSystemLocale
-    #Set-WinSystemLocale en-CA
-    # Set the locale for the region and language
-    Set-Culture -CultureInfo en-CA
-    # Set the region options to the current locale
-    #Set-WinCultureFromLanguageListOptOut 1
-    # Set the region options to "Match current language settings"
-    #Set-WinCultureFromLanguageListOptOut 0
-
     # Disable Action Center
-    #Write-Verbose "Disabling Action Center..." -Verbose
-    If (!(Test-Path "HKCU:\SOFTWARE\Policies\Microsoft\Windows\Explorer")) {
-        New-Item -Path "HKCU:\SOFTWARE\Policies\Microsoft\Windows\Explorer" | Out-Null
-    }
-    Set-ItemProperty -Path HKCU:\SOFTWARE\Policies\Microsoft\Windows\Explorer -Name DisableNotIficationCenter -Type DWord -Value 1
-    Set-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\PushNotIfications -Name ToastEnabled -Type DWord -Value 0
-    # Control Panel to classic icons
-    If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer")) {
-		New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Force | Out-Null
-	}
-	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name "ForceClassicControlPanel" -Type DWord -Value 1
-    Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel" -Name "AllItemsIconView" -Type DWord -Value 0
-    Write-Verbose "Control Panel Icons Set" -Verbose
-    Write-Verbose "User Prep Complete" -Verbose}
-
+        If (!(Test-Path "HKCU:\SOFTWARE\Policies\Microsoft\Windows\Explorer")) {New-Item -Path "HKCU:\SOFTWARE\Policies\Microsoft\Windows\Explorer" | Out-Null}
+        Set-ItemProperty -Path HKCU:\SOFTWARE\Policies\Microsoft\Windows\Explorer -Name DisableNotIficationCenter -Type DWord -Value 1
+        Set-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\PushNotIfications -Name ToastEnabled -Type DWord -Value 0
+    Write-Verbose "Disabling Action Center..." -Verbose
+}
 # Install .NET Framework
 function Prep-DotNET {
     Write-Verbose "Install .NET Framework" -Verbose
-    Add-WindowsCapability -Online -Name NetFx3~~~~
+    Enable-WindowsOptionalFeature -Online -FeatureName “NetFx3”
     Clear-Host
     Write-Verbose ".NET Framework Install Complete" -Verbose
     Clear-Host
@@ -315,82 +229,48 @@ function Prep-DotNET {
 ###############################
 # Application Installs
 ###############################
-# Examples
-#Start-Process msiexec -ArgumentList "/i $PSScriptRoot\whatever.msi /qn"
-#Start-Process -FilePath $(Join-Path -Path $PSScriptRoot -ChildPath "Firefox_Setup_49.0.1.exe") -ArgumentList '-ms' -Wait
-#Start-Process -WorkingDirectory '.\Firefox_Setup_49.0.1.exe -ArgumentList' '-ms' -Wait
-#Start-Process "msiexec.exe" -ArgumentList $MSIArguments -Wait -NoNewWindow 
-
 # Install Chrome
 function Prep-Chrome{
     $ChromeCheck = Test-Path -Path ".\ChromeStandaloneSetup64.exe"
     If($ChromeCheck -eq $true){Start-Process ".\ChromeStandaloneSetup64.exe" -Wait
         Write-Verbose "Chrome Installed" -Verbose}
-    ElseIf($ChromeCheck -eq $false) {Write-Verbose "Local installer not found, downloading..." -Verbose
-        winget install -e --id Google.Chrome}
+    ElseIf($ChromeCheck -eq $false) {Write-Verbose "Local installer not found, installing..." -Verbose
+        choco install -y googlechrome}
 }
 # Install Adobe Reader
 function Prep-Adobe{
-    $AdobeReaderCheck = Test-Path -Path ".\AcroRdrDC_en_US"
+    $AdobeReaderCheck = Test-Path -Path "C:\Program Files (x86)\Adobe\Adobe Reader DC"
     If($AdobeReaderCheck -eq $true){Start-Process ".\AcroRdrDC_en_US" "/sPB /rs" -wait
         Write-Verbose "Adobe Reader Installed" -Verbose}
-    ElseIf($AdobeReaderCheck -eq $false){Write-Verbose "Local installer not found, downloading..." -Verbose
-        winget install -e --id Adobe.Acrobat.Reader.64-bit}
+    ElseIf($AdobeReaderCheck -eq $false){Write-Verbose "Local installer not found, installing..." -Verbose
+        choco install -y adobereader
+    Write-Verbose "Adobe Reader installed"}
 }
-# Install Dell Command Update
-function Prep-DCU-Install{
-    $DellCommandCheck = Test-Path -Path ".\Dell-Command-Update"     
-    If($DellCommandCheck -eq $true){    Start-Process ".\Dell-Command-Update" "/s" -Wait
-        Start-Process "C:\Program Files\Dell\CommandUpdate\dcu-cli.exe" "/configure -userConsent=disable -scheduleManual" -Wait
-        Write-Verbose "DCU Installed" -Verbose}
-    ElseIf($DellCommandCheck -eq $true) {Write-Verbose "Local installer not found, downloading..." -Verbose
-        winget install -e --id Dell.CommandUpdate -Wait
-        Start-Process "C:\Program Files\Dell\CommandUpdate\dcu-cli.exe" "/configure -userConsent=disable -scheduleManual" -Wait}
+# Install Lenovo System Updater check
+function Prep-Updater{
+    $global:Manucheck = (Get-CimInstance -ClassName Win32_ComputerSystem | Select-Object -Expandproperty Manufacturer)
+    If($global:Manucheck -contains "LENOVO") {Write-host "Lenovo System Update will be installed..." -ForegroundColor Green
+        choco install -y lenovo-thinkvantage-system-update}
+    ElseIf($global:Manucheck -contains "Dell Inc.") {Write-host "Dell Command update will be installed..." -ForegroundColor Green
+        choco install -y DellCommandUpdate}
+    }
+# BGInfo Installer
+function Prep-BGInfo{
+    $BGInfoCheck = Test-path "C:\Admin\BGinfo*"
+    iwr -uri https://raw.githubusercontent.com/ZantooTheGreat/Prep/main/LGOCWallpaper_Alt.jpg -OutFile C:\Admin\LGOCWallpaper_Alt.jpg
+    Start-sleep -seconds 2
+    Copy-Item -Force "J:\Approved Installers\BGInfo\Settings_Alt.bgi" -Destination "C:\Admin\"
+    Start-Sleep -seconds 2
+    If($BGInfoCheck -eq $true){Write-host "BGInfo is already downloaded in the Admin folder"}
+    cd C:\Admin\BGInfo.exe
+    .\Bginfo64.exe Settings /silent /timer:0 /nolicprompt
+	ElseIf($BGInfoCheck -eq $false){Write-host "BGInfo installer not found -- Downloading"
+    choco install --force -y bginfo
+    bginfo C:\Admin\Settings_Alt.bgi /timer:0 /nolicprompt}
 }
-# Run Dell Command Update
-Function Prep-DCU-Run{
-    Start-Process "C:\Program Files\Dell\CommandUpdate\dcu-cli.exe" "/scan" -Wait
-    Start-Process "C:\Program Files\Dell\CommandUpdate\dcu-cli.exe" "/applyUpdates" -Wait
-    Write-Verbose "Updates Installed" -Verbose
-}
-# Install Office365 Business Preload
+# Install Office365 via WinGet
 function Prep-Office{
-    $OfficeInstaller = Test-path ".\setup.exe"
-    If($OfficeInstaller -eq $true){
-        Write-Verbose "Removing existing Office365 Installs" -Verbose
-        Start-Process ".\setup.exe" "/configure .\remove.xml" -Wait
-        Start-Sleep 30
-        Start-Process ".\setup.exe" "/configure .\setup.xml" -Wait
-        Write-Verbose "Office365 Installed" -Verbose
-        Start-Process MsiExec.exe -ArgumentList '/X{39AF0813-FA7B-4860-ADBE-93B9B214B914} /qn' -Wait
-        Start-Process MsiExec.exe -ArgumentList '/X{731F6BAA-A986-45A4-8936-7C3AAAAA760B} /qn' -Wait
-        Write-Verbose "Office365 TEAMS Removed" -Verbose}
-    ElseIf($OfficeInstaller -eq $false){Write-host "O365 Offline installer not found, attempting download"
-            winget install -e --id Microsoft.Office}
-}
-# Update Office365 Business Preload
-function Prep-O365-Update{
-    Remove-Item -path .\Office\* -recurse -force
-    sleep 5
-    Start-Process ".\setup.exe" "/download .\setup.xml" -Wait
-    Write-Verbose "Office365 Preload Folder Updated" -Verbose
-}
-# Import file associations
-function Prep-File-Assoc{
-    # dism /online /Import-DefaultAppAssociations:"$PSScriptRoot\DefaultAssociations.xml"
-    $DefaultApps = Test-Path -Path ".\DefaultAssociations.xml"
-    If($DefaultApps -eq $true){dism /online /Import-DefaultAppAssociations:".\DefaultAssociations.xml"}
-    ElseIf($DefaultApps -eq $false){dism /online /Import-DefaultAppAssociations:"C:\DefaultAssociations.xml"}
-}
-# Install Intronis and ask for reboot
-function Prep-Intronis{
-    # Start-Process "$PSScriptRoot\ConsysManagedBackup-Setup.exe" "/Silent"
-    Start-Process ".\ConsysManagedBackup-Setup.exe" "/Silent"
-    sleep 120
-    Write-Verbose "Intronis Installed" -Verbose
-    # Install Intronis and auto reboot
-    #Start-Process ".\ConsysManagedBackup-Setup.exe" "/Silent /SuppressMsgBoxes" -wait
-    #Write-Verbose "Intronis Installed" -Verbose
+		choco install -y office365business
 }
 # Delete desktop shortcuts (minus Google Chrome)
 function Prep-Clean-Shortcuts {
@@ -408,7 +288,7 @@ function Prep-WU {
     # Install NuGet
     Install-PackageProvider NuGet -Force
     Import-PackageProvider NuGet -Force
-    # Apparently PSWindowsUpdate module comes from the PSGallery and needs to be trusted
+    # Apparently PSWindowsUpdate module comes from the PSGallery and needs to be "trusted"
     Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
     # Now actually do the update and reboot If necessary
     Install-Module PSWindowsUpdate
@@ -417,45 +297,93 @@ function Prep-WU {
     #Get-Command -module PSWindowsUpdate
     #Add-WUServiceManager -ServiceID 7971f918-a847-4430-9279-4a52d1efe18d -Confirm:$false
     #Get-WUInstall -MicrosoftUpdate -AcceptAll -AutoReboot
-    Write-Verbose "Checking for, downloading and installing Windows Updates (No Auto Reboot)" -Verbose
+    Write-Verbose "Checking, downloading and installing Windows Updates (No Auto Reboot)" -Verbose
     Get-WindowsUpdate -install -acceptall -IgnoreReboot -IgnoreRebootRequired #-autoreboot
     #Write-Verbose "Installing Windows Updates" -Verbose
     #Install-WindowsUpdate
     Write-Verbose "Installing Windows Updates Complete!" -Verbose
 }
-# Copy Files
-function Prep-Copy {
-    New-Item -Path "C:\Temp\" -ItemType Directory
-    Write-Verbose "Copy of Workstation Prep files to c:\temp" -Verbose
-    Copy-Item -Force -Path .\..\Workstation_Prep -Destination c:\temp\ -Recurse
-    # Copy-Item -Force -Path $PSScriptRoot\..\Workstations_Prep -Destination c:\temp\ -Recurse
-    # Copy-Item -Force -Path '$PSScriptRoot\..\Menu - Shortcut.lnk' -Destination c:\temp\
-    # Copy-Item -Force -Path '$PSScriptRoot\..\Menu - C Drive Shortcut.lnk' -Destination c:\temp\
-    # Copy-Item -Force -Path '.\..\Menu - C Drive Shortcut.lnk' -Destination c:\temp\
+# RMM Installer
+Function Prep-RMM-Install {
+    $global:Pulsecheck = Test-path -Path "C:\Program Files\Pulseway"
+    If($global:Pulsecheck -eq $true){Write-Host "RMM has already been installed"}
+    ElseIf($global:Pulsecheck -eq $false){Write-host "RMM not found, downloading..."
+    iwr -uri https://liftsafe-my.sharepoint.com/:u:/g/personal/mbusenbark_liftsafegroup_com/EeOKVTSESmlFmBbOo0QRbVQBJXvtIOoJkOw8opaLEVySOw?e=xbOCKW -OutFile C:\Admin\RMM_Prep.msi}
 }
-function Prep-BGInfo {
-    #New-Item -Path "C:\BGInfo\" -ItemType Directory
-    Copy-Item -Force -Path .\..\Workstation_Prep\BGInfo -Destination c:\ -Recurse
-    #Copy-Item .\..\Workstation_Prep\BGInfo\bginfo64.exe -Destination "C:\BGInfo\"
-    #Copy-Item .\..\Workstation_Prep\BGInfo\HostName.bgi -Destination "C:\BGInfo\"
-    Copy-Item c:\BGInfo\BGInfo.lnk -Destination "C:\programdata\Microsoft\Windows\Start Menu\Programs\StartUp"
+# Function for Debloat?
+Function Prep-VPN {
+
+# Variables
+$ProfileName = 'LGOC VPN'
+$DnsSuffix = 'liftsafeinspections.com'
+$ServerAddress = 'VPN.liftsafegroup.com'
+$L2tpPsk = 'LgocVPN'
+
+# Build client VPN profile
+# https://docs.microsoft.com/en-us/windows/client-management/mdm/vpnv2-csp
+
+# Define VPN Profile XML
+$ProfileNameEscaped = $ProfileName -replace ' ', '%20'
+$ProfileXML =
+	'<VPNProfile>
+		<RememberCredentials>false</RememberCredentials>
+		<DnsSuffix>'+$dnsSuffix+'</DnsSuffix>
+		<NativeProfile>
+			<Servers>' + $ServerAddress + '</Servers>
+			<RoutingPolicyType>SplitTunnel</RoutingPolicyType>
+			<NativeProtocolType>l2tp</NativeProtocolType>
+			<L2tpPsk>'+$L2tpPsk+'</L2tpPsk>
+		</NativeProfile>
+'
+# Routes to include in the VPN
+$ProfileXML += "  <Route><Address>192.168.0.0</Address><PrefixSize>24</PrefixSize><ExclusionRoute>false</ExclusionRoute></Route>`n"
+$ProfileXML += "  <Route><Address>192.168.1.0</Address><PrefixSize>24</PrefixSize><ExclusionRoute>false</ExclusionRoute></Route>`n"
+
+$ProfileXML += '</VPNProfile>'
+
+# Convert ProfileXML to Escaped Format
+$ProfileXML = $ProfileXML -replace '<', '&lt;'
+$ProfileXML = $ProfileXML -replace '>', '&gt;'
+$ProfileXML = $ProfileXML -replace '"', '&quot;'
+
+# Define WMI-to-CSP Bridge Properties
+$nodeCSPURI = './Vendor/MSFT/VPNv2'
+$namespaceName = 'root\cimv2\mdm\dmmap'
+$className = 'MDM_VPNv2_01'
+
+# Define WMI Session
+$session = New-CimSession
+
+# Create VPN Profile
+try
+{
+	$newInstance = New-Object Microsoft.Management.Infrastructure.CimInstance $className, $namespaceName
+	$property = [Microsoft.Management.Infrastructure.CimProperty]::Create('ParentID', "$nodeCSPURI", 'String', 'Key')
+	$newInstance.CimInstanceProperties.Add($property)
+	$property = [Microsoft.Management.Infrastructure.CimProperty]::Create('InstanceID', "$ProfileNameEscaped", 'String', 'Key')
+	$newInstance.CimInstanceProperties.Add($property)
+	$property = [Microsoft.Management.Infrastructure.CimProperty]::Create('ProfileXML', "$ProfileXML", 'String', 'Property')
+	$newInstance.CimInstanceProperties.Add($property)
+
+	$session.CreateInstance($namespaceName, $newInstance, $options) | Out-Null
+	Write-Host "Created '$ProfileName' profile."
 }
-Function Prep-MAV-Preload {
-    New-Item -Path "C:\ProgramData\ManagedAntivirus" -ItemType directory
-    New-Item -Path "C:\ProgramData\ManagedAntivirus\Downloads" -ItemType directory
-    Copy-Item -Force -Path .\..\Workstation_Prep\AV\*.* -Destination C:\ProgramData\ManagedAntivirus\Downloads -Recurse
+catch [Exception]{Write-Host "Unable to create $ProfileName profile: $_"
+exit
 }
-Function Prep-Kill-Defrag {
-    schtasks /Change /DISABLE /TN "\Microsoft\Windows\Defrag\ScheduledDefrag"
+
+# Create a desktop shortcut
+$WScriptShell = New-Object -ComObject WScript.Shell
+$Shortcut = $WScriptShell.CreateShortcut("$env:Public\Desktop\VPN.lnk")
+$Shortcut.TargetPath = "rasphone.exe"
+$Shortcut.Save()
 }
+
 Function Prep-Kill-Office {
-    Write-Verbose "Removing existing Office365 Installs" -Verbose
-    Start-Process ".\setup.exe" "/configure .\remove.xml" -Wait
     Write-Verbose "Office365 Removed" -Verbose
     Write-Verbose "Removing TEAMS" -Verbose
     Start-Process MsiExec.exe -ArgumentList '/X{39AF0813-FA7B-4860-ADBE-93B9B214B914} /qn' -Wait
     Start-Process MsiExec.exe -ArgumentList '/X{731F6BAA-A986-45A4-8936-7C3AAAAA760B} /qn' -Wait
-    Write-Verbose "Office365 TEAMS Removed" -Verbose
 }
 function Show-Menu {
     param (
@@ -471,14 +399,10 @@ function Show-Menu {
      Write-Host "[3]: Install Software                     "
      Write-Host "[4]: Install .NET Framework 3.5           "
      Write-Host "[5]: Install Windows Updates              "
-     Write-Host "[6]: Install Dell Command Update          "
-     Write-Host "[7]: Run Dell Command Update              "
-     Write-Host "[8]: Update Office 365 Offline Installer  "
-     Write-Host "[9]: Pre-Load Managed AV                  "
-     Write-Host "[10]: Add Domain Users to local admin     "
-     Write-Host "[11]: Add BGInfo (Hostname on desktop)    "
-     Write-Host "[12]: Disable Defrag (For SSDs)           "
-     Write-Host "[13]: Remove All Office Installs          "
+     Write-Host "[6]: Install System Updater               "
+     Write-Host "[7]: Install BGInfo                       "
+     Write-Host "[8]: Install RMM Agent                    "
+     Write-Host "[9]: Setup User VPN                       "
      Write-Host "                                          "
      Write-Host "[C]: Copy Prep Files to c:\temp\          "
      Write-Host "[Q]: Press 'Q' to quit.                   "
@@ -487,147 +411,98 @@ do { Show-Menu
     $input = Read-Host "Please make a selection"
     switch ($input){
     default {
-        Clear-Host
-        $reply_laptop = Read-Host -Prompt "Is this a laptop?[y/N]"
-        Write-Verbose "Enter New PC Name:" -Verbose
-        $PCName = Read-Host -AsString
-        Prep-PC-Name $PCName
-        #Write-Verbose "Enter New Username:" -Verbose
-        #$UserName = Read-Host -AsString
-        #Write-Verbose "Enter New User Password:" -Verbose
-        #$UserPassPlain = Read-Host -AsString
-        #$UserPass = ConvertTo-SecureString -String $UserPassPlain -AsPlainText -Force
-        #Prep-PC-User $UserName $UserPass
-        Prep-MAV-Preload
-        If ( $reply_laptop -notmatch "[yY]"){Prep-PC}
-        Else{Prep-Laptop}
-        Prep-User
-        Prep-Users-Localadmin
-        Prep-DCU-Install
-        Prep-Chrome
-        Prep-Adobe
-        Prep-Office
-        Prep-File-Assoc
-        Prep-Kill-Defrag                
-        Prep-Intronis
-        #Prep-Clean-Shortcuts
-        Prep-DotNET
-        Prep-DCU-Run
-        Prep-WU
-        #Restart-Computer -Force
+    Clear-Host
+    $Prep_Select = Read-Host -Prompt "Workstation(W) or Tablet(T)"
+    $global:DivisionName = Read-host -prompt "Enter division name:"
+    Prep-PC-Name
+    Prep-RMM-Install
+    If ($Prep_Select -eq "W"){Prep-PC}
+    ElseIf($Prep_Select -eq "T"){Prep-Tablet}
+    Prep-User
+    Prep-Users-Localadmin
+    Prep-Updater
+    Prep-Chrome
+    Prep-Adobe
+    Prep-Office
+    Prep-USETHIS
+    Prep-DotNET
+    Prep-WU
     } '1'<# Full PC Prep #> {
-        Clear-Host
-        $reply_laptop = Read-Host -Prompt "Is this a laptop?[y/N]"
-        $reply_pcrename = Read-Host -Prompt "Re-name PC?[Y/n]"
-        $reply_newuser = Read-Host -Prompt "Create new user?[Y/n]"
-        $reply_pladmin = Read-Host -Prompt "Add domain users to local admin?[Y/n]"
-        $reply_office = Read-Host -Prompt "Install Office?[Y/n]"
-        $reply_adobe = Read-Host -Prompt "Install Adobe?[Y/n]"
-        $reply_chrome = Read-Host -Prompt "Install Chrome?[Y/n]"
-        $reply_intronis = Read-Host -Prompt "Install Intronis?[Y/n]"
-        $reply_Clean = Read-Host -Prompt "Remove all desktop shortcuts minus Chrome?[Y/n]"
-        $reply_Defrag = Read-Host -Prompt "Disable Defrag? (For SSDs only!)[Y/n]"
-        $reply_wupdates = Read-Host -Prompt "Install Windows Updates?[Y/n]"
-        $reply_dcu = Read-Host -Prompt "Install Dell Command Update?[Y/n]"
-        $reply_rundcu = Read-Host -Prompt "Run Dell Command Update?[Y/n]"
-        If ( $reply_pcrename -notmatch "[nN]"){Write-Verbose "Enter New PC Name:" -Verbose
-        $PCName = Read-Host -AsString
-        Prep-PC-Name $PCName}
-        If ( $reply_newuser -notmatch "[nN]"){ 
-            Write-Verbose "Enter New Username:" -Verbose
-            $UserName = Read-Host -AsString
-            Write-Verbose "Enter New User Password:" -Verbose
-            $UserPassPlain = Read-Host -AsString
-            $UserPass = ConvertTo-SecureString -String $UserPassPlain -AsPlainText -Force
-            Prep-PC-User $UserName $UserPass}
-        Prep-MAV-Preload
-        If ( $reply_laptop -notmatch "[yY]"){Prep-PC}
-        Else {Prep-Laptop}
-        Prep-User
-        If ( $reply_pladmin -notmatch "[nN]"){Prep-Users-Localadmin}
-        If ( $reply_dcu -notmatch "[nN]"){Prep-DCU-Install}
-        If ( $reply_chrome -notmatch "[nN]"){Prep-Chrome}
-        If ( $reply_adobe -notmatch "[nN]"){Prep-Adobe}
-        If ( $reply_office -notmatch "[nN]"){Prep-Office}
-        Prep-File-Assoc
-        If ( $reply_intronis -notmatch "[nN]"){Prep-Intronis}
-        If ( $reply_Clean -notmatch "[nN]"){Prep-Clean-Shortcuts}
-        If ( $reply_Defrag -notmatch "[nN]"){Prep-Kill-Defrag}
-        Prep-DotNET
-        If ( $reply_rundcu -notmatch "[nN]"){Prep-DCU-Run}
-        If ( $reply_wupdates -notmatch "[nN]"){Prep-WU}
-        #Restart-Computer -Force
-        Write-Verbose "Installation Complete, please reboot system." -Verbose
+    Clear-Host
+    $Prep_Select = Read-Host -Prompt "Is this a laptop?[y/N]"
+    $reply_pladmin = Read-Host -Prompt "Add domain users to local admin?[Y/n]"
+    $reply_office = Read-Host -Prompt "Install Office?[Y/n]"
+    $reply_adobe = Read-Host -Prompt "Install Adobe?[Y/n]"
+    $reply_chrome = Read-Host -Prompt "Install Chrome?[Y/n]"
+    $reply_Clean = Read-Host -Prompt "Remove all desktop shortcuts minus Chrome?[Y/n]"
+    $reply_Defrag = Read-Host -Prompt "Disable Defrag? (For SSDs only!)[Y/n]"
+    $reply_wupdates = Read-Host -Prompt "Install Windows Updates?[Y/n]"
+    $reply_sysupdate = Read-Host -Prompt "Install System Updater?[Y/n]"
+    Prep-RMM-Install
+    If($Prep_Select -notmatch "[yY]"){Prep-PC}
+    Else {Prep-Tablet}
+    Prep-User
+    If ( $reply_pladmin -notmatch "[nN]"){Prep-Users-Localadmin}
+    If ( $reply_sysupdate -notmatch "[nN]"){Prep-Updater}
+    If ( $reply_chrome -notmatch "[nN]"){Prep-Chrome}
+    If ( $reply_adobe -notmatch "[nN]"){Prep-Adobe}
+    If ( $reply_office -notmatch "[nN]"){Prep-Office}
+    If ( $reply_Clean -notmatch "[nN]"){Prep-Clean-Shortcuts}
+    If ( $reply_Defrag -notmatch "[nN]"){Prep-USETHIS}
+    Prep-DotNET
+    If ( $reply_wupdates -notmatch "[nN]"){Prep-WU}
+    #Restart-Computer -Force
+    Write-Verbose "Installation Complete, please reboot system." -Verbose
     } '2'<# User Prep #> {
-        Clear-Host
-        $reply_Clean = Read-Host -Prompt "Remove all desktop shortcuts minus Chrome?[Y/n]"
-        Prep-User
-        If ( $reply_Clean -notmatch "[nN]"){Prep-Clean-Shortcuts}
-        logoff
-        Clear-Host
+    Clear-Host
+    $reply_Clean = Read-Host -Prompt "Remove all desktop shortcuts minus Chrome?[Y/n]"
+    Prep-User
+    If ( $reply_Clean -notmatch "[nN]"){Prep-Clean-Shortcuts}
+    logoff
+    Clear-Host
     } '3'<# Install Software #> {
-        Clear-Host
-        $reply_office = Read-Host -Prompt "Install Office?[Y/n]"
-        $reply_adobe = Read-Host -Prompt "Install Adobe?[Y/n]"
-        $reply_chrome = Read-Host -Prompt "Install Chrome?[Y/n]"
-        $reply_intronis = Read-Host -Prompt "Install Intronis?[Y/n]"
-        $reply_dcu = Read-Host -Prompt "Install Dell Command Update?[Y/n]"
-        If ( $reply_dcu -notmatch "[nN]"){Prep-DCU-Install}
-        If ( $reply_chrome -notmatch "[nN]"){Prep-Chrome}
-        If ( $reply_adobe -notmatch "[nN]"){Prep-Adobe}
-        If ( $reply_office -notmatch "[nN]"){Prep-Office}
-        Prep-File-Assoc
-        If ( $reply_intronis -notmatch "[nN]"){Prep-Intronis}
-        Prep-Clean-Shortcuts
-        Clear-Host
+    Clear-Host
+    $reply_office = Read-Host -Prompt "Install Office?[Y/n]"
+    $reply_adobe = Read-Host -Prompt "Install Adobe?[Y/n]"
+    $reply_chrome = Read-Host -Prompt "Install Chrome?[Y/n]"
+    $reply_sysupdate = Read-Host -Prompt "Install System Updater?[Y/n]"
+    $reply_bginfo = Read-host -Prompt "Install BGinfo?[Y/n] "
+    If ( $reply_sysupdate -notmatch "[nN]"){Prep-Updater}
+    If ( $reply_chrome -notmatch "[nN]"){Prep-Chrome}
+    If ( $reply_adobe -notmatch "[nN]"){Prep-Adobe}
+    If ( $reply_office -notmatch "[nN]"){Prep-Office}
+    if ( $reply_bginfo -notmatch "[nN]") {Prep-BGInfo}
+    Prep-Clean-Shortcuts
+    Clear-Host
     } '4'<# Install .NET Framework 3.5 #> {
-        Clear-Host
-        Prep-DotNET
-        Clear-Host
-    } '5'<# Install Windows Updates #> {
-        Clear-Host
-        Prep-WU
-        Clear-Host
-        #Restart-Computer -Force
-    } '6'<# Install Dell Command Update #> {
-        Clear-Host
-        Prep-DCU-Install
-        Clear-Host
-        #Restart-Computer -Force
-    } '7'<# Run Dell Command Update #> {
-        Clear-Host
-        Prep-DCU-Run
-        Clear-Host
-        #Restart-Computer -Force
-    } '8'<# Update Office 365 Offline Installer #> {
-        Clear-Host
-        Prep-O365-Update
-        Clear-Host
-    } '9'<# Pre-Load Managed AV #> {
-        Clear-Host
-        Prep-MAV-Preload
-        Clear-Host
-    } '10'<# Add Domain Users to local admin #> {
-        Clear-Host
-        Prep-Users-Localadmin
-        Clear-Host
-    } '11'<# Add BGInfo (Hostname on desktop) #> {
-        Clear-Host
-        Prep-BGInfo
-        Clear-Host
-    } '12'<# Disable Defrag (For SSDs) #> {
-        Clear-Host
-        Prep-Kill-Defrag                
-        Clear-Host
-    } '13'<# Remove All Office Installs #> {
-        Clear-Host
-        Prep-Kill-Office
-        Clear-Host
-    } 'c' <# Copy Prep Files #> {
-        Clear-Host
-        Prep-Copy
-        Clear-Host
-    } 'q' {
+    Clear-Host
+    Prep-DotNET
+    Clear-Host
+    } '5'<# Install Windows Updates #>  {
+    Clear-host
+    Prep-WU
+    Clear-Host
+    } '6'<# Install System Update #> {
+    Clear-Host
+    Prep-Updater
+    Clear-Host
+    } '7'<# Install BGInfo #> {
+    Clear-Host
+    Prep-BGInfo
+    Clear-Host
+    } '8'<# Install RMM Agent #> {
+    Clear-Host
+    Prep-RMM-Install
+    Clear-Host
+    } '9'<# Setup VPN, and create shortcut #> {
+    Clear-Host
+    Prep-VPN
+    Clear-Host
+} 'c' <# Copy Prep Files #> {
+    Clear-Host
+    Write-host "Maybe use this for the audit tiemsheet thingy"
+    Clear-Host
+} 'q' <#To close window#> {
         return
 }
 }

@@ -182,7 +182,7 @@ function Prep-User {
     Get-AppxPackage -allusers Microsoft.MicrosoftOfficeHub | Remove-AppxPackage
     # Prevent reinstall of default apps with new user
 	Get-AppXProvisionedPackage -Online | Remove-AppxProvisionedPackage -Online
-    Clear-Host
+    #Clear-Host
     # Start Menu: Disable Bing Search Results
     Set-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search -Name BingSearchEnabled -Type DWord -Value 0
     # Change Explorer home screen back to "This PC"
@@ -218,9 +218,9 @@ function Prep-User {
 function Prep-DotNET {
     Write-Verbose "Install .NET Framework" -Verbose
     Enable-WindowsOptionalFeature -Online -FeatureName “NetFx3”
-    Clear-Host
+    #Clear-Host
     Write-Verbose ".NET Framework Install Complete" -Verbose
-    Clear-Host
+    #Clear-Host
 }
 ###############################
 # Application Installs
@@ -443,7 +443,7 @@ function Show-Menu {
     param (
            [string]$Title = 'Workstation Prep Menu'
     )
-     Clear-Host
+     #Clear-Host
      Write-Host "================= $Title ================="
      Write-Host "                                          "
      Write-Host "[ENTER]: Domain PC Prep (All - No Reboot) "
@@ -469,7 +469,7 @@ do { Show-Menu
         $input = Read-Host "Please make a selection"
         switch ($input){
         default {
-        Clear-Host
+        #Clear-Host
         $Prep_Select = Read-Host -Prompt "Workstation(W) or Tablet(T)"
         $global:DivisionName = Read-host -prompt "Enter division name:"
         Prep-PC-Name
@@ -486,7 +486,7 @@ do { Show-Menu
         Prep-DotNET
         Prep-WU
 } '1'<# Full PC Prep #> {
-    Clear-Host
+    #Clear-Host
     $Prep_Select = Read-Host -Prompt "Is this a Workstation(W), or Tablet?(T)"
     $reply_pladmin = Read-Host -Prompt "Add domain users to local admin?[Y/n]"
     $reply_office = Read-Host -Prompt "Install Office?[Y/n]"
@@ -512,14 +512,14 @@ do { Show-Menu
     #Restart-Computer -Force
     Write-Verbose "Installation Complete, please reboot system." -Verbose
 } '2'<# User Prep #> {
-    Clear-Host
+    #Clear-Host
     $reply_Clean = Read-Host -Prompt "Remove all desktop shortcuts minus Chrome?[Y/n]"
     Prep-User
     If ( $reply_Clean -notmatch "[nN]"){Prep-Clean-Shortcuts}
     logoff
-    Clear-Host
+    #Clear-Host
 } '3'<# Install Software #> {
-    Clear-Host
+    #Clear-Host
     $reply_office = Read-Host -Prompt "Install Office?[Y/n]"
     $reply_adobe = Read-Host -Prompt "Install Adobe?[Y/n]"
     $reply_chrome = Read-Host -Prompt "Install Chrome?[Y/n]"
@@ -531,39 +531,39 @@ do { Show-Menu
     If ( $reply_office -notmatch "[nN]"){Prep-Office}
     if ( $reply_bginfo -notmatch "[nN]") {Prep-BGInfo}
     Prep-Clean-Shortcuts
-    Clear-Host
+    #Clear-Host
 } '4'<# Install .NET Framework 3.5 #> {
-    Clear-Host
+    #Clear-Host
     Prep-DotNET
-    Clear-Host
+    #Clear-Host
 } '5'<# Run Windows Updates #>  {
-    Clear-host
+    #Clear-Host
     Prep-WU
-    Clear-Host
+    #Clear-Host
 } '6'<# Install System Update #> {
-    Clear-Host
+    #Clear-Host
     Prep-Updater
-    Clear-Host
+    #Clear-Host
 } '7'<# Install RMM Agent #> {
-    Clear-Host
+    #Clear-Host
     Prep-RMM-Install
-    Clear-Host
+    #Clear-Host
 } '8'<# Install BGInfo #>{
-    Clear-Host
+    #Clear-Host
     Prep-BGInfo
-    Clear-Host
+    #Clear-Host
 } '9'<# Download G10, and run #> {
-    Clear-Host
+    #Clear-Host
     Prep-G10
-    Clear-Host
+    #Clear-Host
 } 'X' <# Re-map network drives #>{
-    Clear-Host
+    #Clear-Host
     Prep-DriveMaps
-    Clear-Host
+    #Clear-Host
 } 'V' <# Setup user VPN, and create shorcut #> {
-    Clear-Host
+    #Clear-Host
     Prep-VPN    
-    Clear-Host
+    #Clear-Host
 } 'q' <#To close window#> {
             return
     }

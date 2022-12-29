@@ -42,10 +42,6 @@ function Prep-PC {
     # Enable RDP
         Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Terminal Server" -name "fDenyTSConnections" -Value 0
         Write-Verbose "RDP Enabled" -Verbose
-    #
-
-
-    
     # Power settings
         # Set Power Plan to High Performance
             powercfg /s 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
@@ -230,15 +226,15 @@ function Prep-DotNET {
 # Application Installs
 ###############################
 # Install Chrome
-function Prep-Chrome{
-    $ChromeCheck = Test-Path -Path ".\ChromeStandaloneSetup64.exe"
+function Prep-Chrome {
+    $ChromeCheck = Test-Path -Path "ChromeStandaloneSetup64.exe"
     If($ChromeCheck -eq $true){Start-Process ".\ChromeStandaloneSetup64.exe" -Wait
         Write-Verbose "Chrome Installed" -Verbose}
     ElseIf($ChromeCheck -eq $false) {Write-Verbose "Local installer not found, installing..." -Verbose
         choco install -y googlechrome}
 }
 # Install Adobe Reader
-function Prep-Adobe{
+function Prep-Adobe {
     $AdobeReaderCheck = Test-Path -Path "C:\Program Files (x86)\Adobe\Adobe Reader DC"
     If($AdobeReaderCheck -eq $true){Start-Process ".\AcroRdrDC_en_US" "/sPB /rs" -wait
         Write-Verbose "Adobe Reader Installed" -Verbose}
@@ -247,15 +243,15 @@ function Prep-Adobe{
     Write-Verbose "Adobe Reader installed"}
 }
 # Install Lenovo System Updater check
-function Prep-Updater{
+function Prep-Updater {
     $global:Manucheck = (Get-CimInstance -ClassName Win32_ComputerSystem | Select-Object -Expandproperty Manufacturer)
     If($global:Manucheck -contains "LENOVO") {Write-host "Lenovo System Update will be installed..." -ForegroundColor Green
         choco install -y lenovo-thinkvantage-system-update}
     ElseIf($global:Manucheck -contains "Dell Inc.") {Write-host "Dell Command update will be installed..." -ForegroundColor Green
         choco install -y DellCommandUpdate}
-    }
+}
 # BGInfo Installer
-function Prep-BGInfo{
+function Prep-BGInfo {
     $BGInfoCheck = Test-path "C:\Admin\BGinfo*"
     iwr -uri https://raw.githubusercontent.com/ZantooTheGreat/Prep/main/LGOCWallpaper_Alt.jpg -OutFile C:\Admin\LGOCWallpaper_Alt.jpg
     Start-sleep -seconds 2
@@ -269,8 +265,25 @@ function Prep-BGInfo{
     bginfo C:\Admin\Settings_Alt.bgi /timer:0 /nolicprompt}
 }
 # Install Office365 via WinGet
-function Prep-Office{
+function Prep-Office {
 		choco install -y office365business
+}
+# Install G10 2.20
+function Prep-G10 {
+    Write-Host "Downloading G10 for tablets..."
+    Invoke-WebRequest -Uri "http://207.188.84.12/web.teamsfa/G10/G10Setup.html" -OutFile "C:\Admin\G10\G10Setup.exe"
+    Start-Sleep -Seconds 3
+    Invoke-Item -Path "C:\Admin\G10"
+}
+function Prep-LGOCShortcuts {
+    $wshShell = New-Object -ComObject "WScript.Shell"
+    #Create shortcut and name it
+    $urlShortcut = $wshShell.CreateShortcut((Join-Path $wshShell.SpecialFolders.Item("AllUsersDesktop")"G10 Login.url"))
+    # URL
+    $urlShortcut.TargetPath = "http://www.724webs.com/Liftsafe/"
+    $urlShortcut.Save()
+    Invoke-WebRequest -Uri "http://www.724webs.com/Liftsafe/PDFBuilder/publish.htm" -OutFile "C:\Admin\G10\PDFBuilder.exe"
+
 }
 # Delete desktop shortcuts (minus Google Chrome)
 function Prep-Clean-Shortcuts {
@@ -279,6 +292,13 @@ function Prep-Clean-Shortcuts {
 }
 # Windows Updates
 function Prep-WU {
+    
+    Install-Module PSWindowsUpdate
+    Add-WUServiceManager -MicrosoftUpdate
+    
+    Install-WindowsUpdate -AcceptAll -IgnoreReboot | Out-File "C:\Admin\($env.computername-Get-Date -f yyyy-MM-dd)-MSUpdates.log" -Force
+<#
+    
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     # Enable updates for other microsoft products
     $ServiceManager = New-Object -ComObject "Microsoft.Update.ServiceManager"
@@ -301,7 +321,7 @@ function Prep-WU {
     Get-WindowsUpdate -install -acceptall -IgnoreReboot -IgnoreRebootRequired #-autoreboot
     #Write-Verbose "Installing Windows Updates" -Verbose
     #Install-WindowsUpdate
-    Write-Verbose "Installing Windows Updates Complete!" -Verbose
+    Write-Verbose "Installing Windows Updates Complete!" -Verbose#>
 }
 # RMM Installer
 Function Prep-RMM-Install {
@@ -310,14 +330,13 @@ Function Prep-RMM-Install {
     ElseIf($global:Pulsecheck -eq $false){Write-host "RMM not found, downloading..."
     iwr -uri https://liftsafe-my.sharepoint.com/:u:/g/personal/mbusenbark_liftsafegroup_com/EeOKVTSESmlFmBbOo0QRbVQBJXvtIOoJkOw8opaLEVySOw?e=xbOCKW -OutFile C:\Admin\RMM_Prep.msi}
 }
-# Function for Debloat?
+# Create user VPN
 Function Prep-VPN {
-
 # Variables
-$ProfileName = 'LGOC VPN'
-$DnsSuffix = 'liftsafeinspections.com'
-$ServerAddress = 'VPN.liftsafegroup.com'
-$L2tpPsk = 'LgocVPN'
+$ProfileName = Read-Host -Prompt 'LGOC VPN'
+$DnsSuffix = Read-Host -Prompt 'liftsafeinspections.com'
+$ServerAddress = Read-Host -Prompt 'VPN.liftsafegroup.com'
+$L2tpPsk = Read-Host -Prompt 'LgocVPN'
 
 # Build client VPN profile
 # https://docs.microsoft.com/en-us/windows/client-management/mdm/vpnv2-csp
@@ -378,35 +397,55 @@ $Shortcut = $WScriptShell.CreateShortcut("$env:Public\Desktop\VPN.lnk")
 $Shortcut.TargetPath = "rasphone.exe"
 $Shortcut.Save()
 }
-
 Function Prep-Kill-Office {
     Write-Verbose "Office365 Removed" -Verbose
     Write-Verbose "Removing TEAMS" -Verbose
     Start-Process MsiExec.exe -ArgumentList '/X{39AF0813-FA7B-4860-ADBE-93B9B214B914} /qn' -Wait
     Start-Process MsiExec.exe -ArgumentList '/X{731F6BAA-A986-45A4-8936-7C3AAAAA760B} /qn' -Wait
 }
+# Re-Map network drives
+function Prep-DriveMaps {
+    NET USE * /delete /y
+    Write-Host "Existing drive maps removed" -ForegroundColor Yellow
+    Start-Sleep -Seconds 1
+    NET USE J: "\\LESG-DC-01.liftsafeinspections.com\Data" /PERSISTENT:YES /YES
+    #New-PSDrive -Name J -PSProvider FileSystem -root "\\LESG-DC-01.liftsafeinspections.com\Data" -Description "Data" -persist
+    Start-Sleep -Seconds 1
+    NET USE S: "\\PARC-DC-01.liftsafeinspections.com\Simply" /PERSISTENT:YES /YES
+    #New-PSDrive -Name S -PSProvider FileSystem -root "\\PARC-DC-01.liftsafeinspections.com\Simply" -Description "Simply" -persist
+    Start-Sleep -Seconds 1
+    NET USE X: "\\LESG-DC-01.liftsafeinspections.com\StaffFiles" /PERSISTENT:YES /YES
+    #New-PSDrive -Name X -PSProvider FileSystem -root "\\LESG-DC-01.liftsafeinspections.com\StaffFiles" -Description "Staff Files" -persist
+    Start-Sleep -Seconds 1
+    NET USE Z: "\\LESG-ENG-01.liftsafeinspections.com\Engineering" /PERSISTENT:YES /YES
+    #New-PSDrive -Name Z -PSProvider FileSystem -root "\\LESG-ENG-01.liftsafeinspections.com\Engineering" -Description "Engineering" -persist
+}
 function Show-Menu {
     param (
            [string]$Title = 'Workstation Prep Menu'
-     )
+    )
      Clear-Host
      Write-Host "================= $Title ================="
      Write-Host "                                          "
      Write-Host "[ENTER]: Domain PC Prep (All - No Reboot) "
      Write-Host "                                          "
-     Write-Host "[1]: Full PC Prep (Optional Selections)   "
-     Write-Host "[2]: User Prep (Ex. Dental)               "
+     Write-Host "[1]: Full PC Prep                         "
+     Write-Host "[2]: User Prep                            "
      Write-Host "[3]: Install Software                     "
      Write-Host "[4]: Install .NET Framework 3.5           "
-     Write-Host "[5]: Install Windows Updates              "
+     Write-Host "[5]: Run Windows Update               "
      Write-Host "[6]: Install System Updater               "
-     Write-Host "[7]: Install BGInfo                       "
-     Write-Host "[8]: Install RMM Agent                    "
-     Write-Host "[9]: Setup User VPN                       "
+     Write-Host "[7]: Install RMM Agent                    "
      Write-Host "                                          "
-     Write-Host "[C]: Copy Prep Files to c:\temp\          "
+     Write-Host "           LGOC specific                  "
+     Write-Host "[8]: Install BGInfo                       "
+     Write-Host "[9]: Install G10                          "
+     Write-Host "[S]: LGOC Shortcuts                       "
+     Write-Host "[X]: Re-Map Network Drives                "     
+     Write-Host "[V]: Setup User VPN                       "
      Write-Host "[Q]: Press 'Q' to quit.                   "
-     Write-Host "                                          "}
+     Write-Host "                                          "
+}
 do { Show-Menu
     $input = Read-Host "Please make a selection"
     switch ($input){
@@ -429,7 +468,7 @@ do { Show-Menu
     Prep-WU
     } '1'<# Full PC Prep #> {
     Clear-Host
-    $Prep_Select = Read-Host -Prompt "Is this a laptop?[y/N]"
+    $Prep_Select = Read-Host -Prompt "Is this a Workstation(W), or Tablet?(T)"
     $reply_pladmin = Read-Host -Prompt "Add domain users to local admin?[Y/n]"
     $reply_office = Read-Host -Prompt "Install Office?[Y/n]"
     $reply_adobe = Read-Host -Prompt "Install Adobe?[Y/n]"
@@ -439,8 +478,8 @@ do { Show-Menu
     $reply_wupdates = Read-Host -Prompt "Install Windows Updates?[Y/n]"
     $reply_sysupdate = Read-Host -Prompt "Install System Updater?[Y/n]"
     Prep-RMM-Install
-    If($Prep_Select -notmatch "[yY]"){Prep-PC}
-    Else {Prep-Tablet}
+    If($Prep_Select -contains "W"){Prep-PC}
+    ElseIf ($Prep_Select -contains "T"){Prep-Tablet}
     Prep-User
     If ( $reply_pladmin -notmatch "[nN]"){Prep-Users-Localadmin}
     If ( $reply_sysupdate -notmatch "[nN]"){Prep-Updater}
@@ -478,7 +517,7 @@ do { Show-Menu
     Clear-Host
     Prep-DotNET
     Clear-Host
-    } '5'<# Install Windows Updates #>  {
+    } '5'<# Run Windows Updates #>  {
     Clear-host
     Prep-WU
     Clear-Host
@@ -486,21 +525,25 @@ do { Show-Menu
     Clear-Host
     Prep-Updater
     Clear-Host
-    } '7'<# Install BGInfo #> {
-    Clear-Host
-    Prep-BGInfo
-    Clear-Host
-    } '8'<# Install RMM Agent #> {
+    }'7'<# Install RMM Agent #> {
     Clear-Host
     Prep-RMM-Install
     Clear-Host
-    } '9'<# Setup VPN, and create shortcut #> {
+    }'8'<# Install BGInfo #>{
     Clear-Host
-    Prep-VPN
+    Prep-BGInfo
     Clear-Host
-} 'c' <# Copy Prep Files #> {
+    }'9'<# Download G10, and run #> {
     Clear-Host
-    Write-host "Maybe use this for the audit tiemsheet thingy"
+    Prep-G10
+    Clear-Host
+    } 'X' <# Re-map network drives #>{
+    Clear-Host
+    Prep-DriveMaps
+    Clear-Host
+    } 'V' <# Setup user VPN, and create shorcut #> {
+    Clear-Host
+    Prep-VPN    
     Clear-Host
 } 'q' <#To close window#> {
         return

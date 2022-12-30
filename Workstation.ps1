@@ -217,7 +217,7 @@ function Prep-User {
 # Install .NET Framework
 function Prep-DotNET {
     Write-Verbose "Install .NET Framework" -Verbose
-    Enable-WindowsOptionalFeature -Online -FeatureName “NetFx3”
+    Add-WindowsCapability –Online -Name NetFx3~~~~
     #Clear-Host
     Write-Verbose ".NET Framework Install Complete" -Verbose
     #Clear-Host
@@ -292,11 +292,15 @@ function Prep-Clean-Shortcuts {
 }
 # Windows Updates
 function Prep-WU {
-    
+    # Install update module
     Install-Module PSWindowsUpdate
+    # Add Windows update service man
     Add-WUServiceManager -MicrosoftUpdate
-    
+    # Install all available Windows update and create log file in Admin dir
     Install-WindowsUpdate -AcceptAll -IgnoreReboot | Out-File "C:\Admin\($env.computername-Get-Date -f yyyy-MM-dd)-MSUpdates.log" -Force
+    # Review Windows updates
+    Get-WindowsUpdate
+
 <# [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     # Enable updates for other microsoft products
     $ServiceManager = New-Object -ComObject "Microsoft.Update.ServiceManager"
@@ -326,7 +330,7 @@ Function Prep-RMM-Install {
     $global:Pulsecheck = Test-path -Path "C:\Program Files\Pulseway"
     If($global:Pulsecheck -eq $true){Write-Host "RMM has already been installed"}
     ElseIf($global:Pulsecheck -eq $false){Write-host "RMM not found, downloading..."
-    iwr -uri https://liftsafe-my.sharepoint.com/:u:/g/personal/mbusenbark_liftsafegroup_com/EeOKVTSESmlFmBbOo0QRbVQBJXvtIOoJkOw8opaLEVySOw?e=xbOCKW -OutFile C:\Admin\RMM_Prep.msi}
+    iwr -uri "https://liftsafe-my.sharepoint.com/:u:/g/personal/mbusenbark_liftsafegroup_com/EeOKVTSESmlFmBbOo0QRbVQBJXvtIOoJkOw8opaLEVySOw?e=xbOCKW" -OutFile C:\Admin\RMM_Prep.msi}
 }
 # Create user VPN
 Function Prep-VPN {
@@ -338,89 +342,15 @@ Function Prep-VPN {
     $TunType = "L2tp"
     $VPNAuth = "Psk"
     $LoginCreds = "True"
-    $AuthenticationMethod = "Chap, MsChapv2, Pap"
     
     # Create VPN Connection
-    Add-VpnConnection -Name $VPNName -ServerAddress $VPNAddress -TunnelType $TunType -EncryptionLevel Required -L2tppsk $VPNAuth <#-UseWinlogonCredential $LoginCreds#> -AuthenticationMethod $AuthenticationMethod -SplitTunneling -RememberCredentials -Force
+    Add-VpnConnection -Name $VPNName -ServerAddress $VPNAddress -TunnelType $TunType -EncryptionLevel Required -L2tppsk $VPNAuth <#-UseWinlogonCredential $LoginCreds#> -AuthenticationMethod Chap, MsChapv2, Pap -SplitTunneling -Force
     
     # Create a desktop shortcut
     $WScriptShell = New-Object -ComObject WScript.Shell
     $VPNShortcut = $WScriptShell.CreateShortcut("$env:Public\Desktop\$VPNName.lnk")
     $VPNShortcut.TargetPath = "rasphone.exe"
     $VPNShortcut.Save()
-    
-<# OLD VPN SETUP
-    # Variables
-    $ProfileName = Read-Host -Prompt 'LGOC VPN'
-    $DnsSuffix = Read-Host -Prompt 'liftsafeinspections.com'
-    $ServerAddress = Read-Host -Prompt 'VPN.liftsafegroup.com'
-    $L2tpPsk = Read-Host -Prompt 'LgocVPN'
-
-    # Build client VPN profile
-    # https://docs.microsoft.com/en-us/windows/client-management/mdm/vpnv2-csp
-
-    # Define VPN Profile XML
-    $ProfileNameEscaped = $ProfileName -replace ' ', '%20'
-    $ProfileXML =
-        '<VPNProfile>
-            <RememberCredentials>false</RememberCredentials>
-            <DnsSuffix>'+$dnsSuffix+'</DnsSuffix>
-            <NativeProfile>
-                <Servers>' + $ServerAddress + '</Servers>
-                <RoutingPolicyType>SplitTunnel</RoutingPolicyType>
-                <NativeProtocolType>l2tp</NativeProtocolType>
-                <L2tpPsk>'+$L2tpPsk+'</L2tpPsk>
-            </NativeProfile>
-    '
-    # Routes to include in the VPN
-    $ProfileXML += "  <Route><Address>192.168.0.0</Address><PrefixSize>24</PrefixSize><ExclusionRoute>false</ExclusionRoute></Route>`n"
-    $ProfileXML += "  <Route><Address>192.168.1.0</Address><PrefixSize>24</PrefixSize><ExclusionRoute>false</ExclusionRoute></Route>`n"
-
-    $ProfileXML += '</VPNProfile>'
-
-    # Convert ProfileXML to Escaped Format
-    $ProfileXML = $ProfileXML -replace '<', '&lt;'
-    $ProfileXML = $ProfileXML -replace '>', '&gt;'
-    $ProfileXML = $ProfileXML -replace '"', '&quot;'
-
-    # Define WMI-to-CSP Bridge Properties
-    $nodeCSPURI = './Vendor/MSFT/VPNv2'
-    $namespaceName = 'root\cimv2\mdm\dmmap'
-    $className = 'MDM_VPNv2_01'
-
-    # Define WMI Session
-    $session = New-CimSession
-
-    # Create VPN Profile
-    try
-    {
-        $newInstance = New-Object Microsoft.Management.Infrastructure.CimInstance $className, $namespaceName
-        $property = [Microsoft.Management.Infrastructure.CimProperty]::Create('ParentID', "$nodeCSPURI", 'String', 'Key')
-        $newInstance.CimInstanceProperties.Add($property)
-        $property = [Microsoft.Management.Infrastructure.CimProperty]::Create('InstanceID', "$ProfileNameEscaped", 'String', 'Key')
-        $newInstance.CimInstanceProperties.Add($property)
-        $property = [Microsoft.Management.Infrastructure.CimProperty]::Create('ProfileXML', "$ProfileXML", 'String', 'Property')
-        $newInstance.CimInstanceProperties.Add($property)
-
-        $session.CreateInstance($namespaceName, $newInstance, $options) | Out-Null
-        Write-Host "Created '$ProfileName' profile."
-    }
-    catch [Exception]{Write-Host "Unable to create $ProfileName profile: $_"
-    exit
-    }
-
-    # Create a desktop shortcut
-    $WScriptShell = New-Object -ComObject WScript.Shell
-    $Shortcut = $WScriptShell.CreateShortcut("$env:Public\Desktop\VPN.lnk")
-    $Shortcut.TargetPath = "rasphone.exe"
-    $Shortcut.Save()
-    }
-    Function Prep-Kill-Office {
-        Write-Verbose "Office365 Removed" -Verbose
-        Write-Verbose "Removing TEAMS" -Verbose
-        Start-Process MsiExec.exe -ArgumentList '/X{39AF0813-FA7B-4860-ADBE-93B9B214B914} /qn' -Wait
-        Start-Process MsiExec.exe -ArgumentList '/X{731F6BAA-A986-45A4-8936-7C3AAAAA760B} /qn' -Wait #>
-
 }
 # Re-Map network drives
 function Prep-DriveMaps {
@@ -452,7 +382,7 @@ function Show-Menu {
      Write-Host "[2]: User Prep                            "
      Write-Host "[3]: Install Software                     "
      Write-Host "[4]: Install .NET Framework 3.5           "
-     Write-Host "[5]: Run Windows Update               "
+     Write-Host "[5]: Run Windows Update                   "
      Write-Host "[6]: Install System Updater               "
      Write-Host "[7]: Install RMM Agent                    "
      Write-Host "                                          "
@@ -473,63 +403,62 @@ do { Show-Menu
         $Prep_Select = Read-Host -Prompt "Workstation(W) or Tablet(T)"
         $global:DivisionName = Read-host -prompt "Enter division name:"
         Prep-PC-Name
-        Prep-RMM-Install
         If ($Prep_Select -eq "W"){Prep-PC}
         ElseIf($Prep_Select -eq "T"){Prep-Tablet}
         Prep-User
+        Prep-RMM-Install
         Prep-Users-Localadmin
         Prep-Updater
         Prep-Chrome
         Prep-Adobe
-        Prep-Office
-        Prep-USETHIS
         Prep-DotNET
+        Prep-Office
         Prep-WU
 } '1'<# Full PC Prep #> {
     #Clear-Host
     $Prep_Select = Read-Host -Prompt "Is this a Workstation(W), or Tablet?(T)"
     $reply_pladmin = Read-Host -Prompt "Add domain users to local admin?[Y/n]"
-    $reply_office = Read-Host -Prompt "Install Office?[Y/n]"
     $reply_adobe = Read-Host -Prompt "Install Adobe?[Y/n]"
     $reply_chrome = Read-Host -Prompt "Install Chrome?[Y/n]"
+    $reply_office = Read-Host -Prompt "Install Office?[Y/n]"
     $reply_Clean = Read-Host -Prompt "Remove all desktop shortcuts minus Chrome?[Y/n]"
-    $reply_Defrag = Read-Host -Prompt "Disable Defrag? (For SSDs only!)[Y/n]"
     $reply_wupdates = Read-Host -Prompt "Install Windows Updates?[Y/n]"
     $reply_sysupdate = Read-Host -Prompt "Install System Updater?[Y/n]"
-    Prep-RMM-Install
+    $reply_VPN = Read-Host -Prompt "Setup VPN?[Y/n]"
     If($Prep_Select -contains "W"){Prep-PC}
-    ElseIf ($Prep_Select -contains "T"){Prep-Tablet}
+    ElseIf($Prep_Select -contains "T"){Prep-Tablet}
     Prep-User
-    If ( $reply_pladmin -notmatch "[nN]"){Prep-Users-Localadmin}
-    If ( $reply_sysupdate -notmatch "[nN]"){Prep-Updater}
-    If ( $reply_chrome -notmatch "[nN]"){Prep-Chrome}
-    If ( $reply_adobe -notmatch "[nN]"){Prep-Adobe}
-    If ( $reply_office -notmatch "[nN]"){Prep-Office}
-    If ( $reply_Clean -notmatch "[nN]"){Prep-Clean-Shortcuts}
-    If ( $reply_Defrag -notmatch "[nN]"){Prep-USETHIS}
+    Prep-PC
+    Prep-RMM-Install
     Prep-DotNET
-    If ( $reply_wupdates -notmatch "[nN]"){Prep-WU}
-    #Restart-Computer -Force
+    If ($reply_pladmin -notmatch "[nN]"){Prep-Users-Localadmin}
+    If ($reply_sysupdate -notmatch "[nN]"){Prep-Updater}
+    If ($reply_chrome -notmatch "[nN]"){Prep-Chrome}
+    If ($reply_adobe -notmatch "[nN]"){Prep-Adobe}
+    If ($reply_office -notmatch "[nN]"){Prep-Office}
+    If ($reply_Clean -notmatch "[nN]"){Prep-Clean-Shortcuts}
+    If ($reply_VPN -notmatch "[nN]"){Prep-VPN}
+    If ($reply_wupdates -notmatch "[nN]"){Prep-WU}
     Write-Verbose "Installation Complete, please reboot system." -Verbose
+
 } '2'<# User Prep #> {
     #Clear-Host
     $reply_Clean = Read-Host -Prompt "Remove all desktop shortcuts minus Chrome?[Y/n]"
+    If ($reply_Clean -notmatch "[nN]"){Prep-Clean-Shortcuts}
     Prep-User
-    If ( $reply_Clean -notmatch "[nN]"){Prep-Clean-Shortcuts}
-    logoff
     #Clear-Host
 } '3'<# Install Software #> {
     #Clear-Host
-    $reply_office = Read-Host -Prompt "Install Office?[Y/n]"
     $reply_adobe = Read-Host -Prompt "Install Adobe?[Y/n]"
     $reply_chrome = Read-Host -Prompt "Install Chrome?[Y/n]"
     $reply_sysupdate = Read-Host -Prompt "Install System Updater?[Y/n]"
-    $reply_bginfo = Read-host -Prompt "Install BGinfo?[Y/n] "
+    $reply_bginfo = Read-host -Prompt "Install BGinfo?[Y/n]"
+    $reply_office = Read-Host -Prompt "Install Office?[Y/n]"
     If ( $reply_sysupdate -notmatch "[nN]"){Prep-Updater}
     If ( $reply_chrome -notmatch "[nN]"){Prep-Chrome}
     If ( $reply_adobe -notmatch "[nN]"){Prep-Adobe}
-    If ( $reply_office -notmatch "[nN]"){Prep-Office}
     if ( $reply_bginfo -notmatch "[nN]") {Prep-BGInfo}
+    If ( $reply_office -notmatch "[nN]"){Prep-Office}
     Prep-Clean-Shortcuts
     #Clear-Host
 } '4'<# Install .NET Framework 3.5 #> {

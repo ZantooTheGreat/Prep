@@ -6,14 +6,16 @@
 # MANAGEMENT CONSENT.                       #
 #                                           #
 #############################################
-# Variables
-$global:PCNameSuffix = (get-ciminstance -ClassName Win32_ComputerSystemProduct | Select-Object -ExpandProperty IdentifyingNumber)
-#PC Name container
-$global:FullPCName = "$global:DivisionName - $global:PCNameSuffix"
+
 # Rename PC
-function Prep-PC-Name ($global:FullPCName){
-    Rename-Computer -NewName "$global:FullPCName"
-}
+function Prep-PC-Name {
+    #PC Serial
+        $global:PCNameSuffix = (get-ciminstance -ClassName Win32_ComputerSystemProduct | Select-Object -ExpandProperty IdentifyingNumber)
+    #PC Name prefix prompt
+        $global:DivisionName = Read-host -prompt "Enter division name"
+        $global:FullPCName = "$global:DivisionName-$global:PCNameSuffix"
+        Rename-Computer -NewName "$global:FullPCName"
+        Write-host "Computer name changed to: $global:FullPCName"}
 # PC Prep
 function Prep-PC {
     # Create Admin directory and hide it from muggles
@@ -22,14 +24,6 @@ function Prep-PC {
             attrib +s +h "C:\Admin"
             Copy-Item -Force "J:\Approved Installers\BGInfo\Settings_Alt.bgi" -Destination "C:\Admin\"
             cd C:\Admin
-    # Install WinGet
-        Write-Host "Installing Winget... Please Wait"
-        Start-Process "ms-appinstaller:?source=https://www.microsoft.com/store/productId/9NBLGGH4NNS1"
-        $nid = (Get-Process AppInstaller).Id
-        Wait-Process -Id $nid
-        Write-Host Winget Installed
-        Write-Host "Winget Installed - Ready for Next Task"
-        Start-Sleep -Seconds 2
     # Chocolatey
             Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
     # Disable UAC
@@ -43,7 +37,73 @@ function Prep-PC {
         Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Terminal Server" -name "fDenyTSConnections" -Value 0
         Write-Verbose "RDP Enabled" -Verbose
     # Power settings
-        # Set Power Plan to High Performance
+<#      
+        powercfg -setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
+        powercfg -h off
+        powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c fea3413e-7e05-4911-9a71-700331f1c294 0e796bdb-100d-47d6-a2d5-f7d2daa51f51 0
+        powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c fea3413e-7e05-4911-9a71-700331f1c294 0e796bdb-100d-47d6-a2d5-f7d2daa51f51 1
+        powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 0012ee47-9041-4b5d-9b77-535fba8b1442 6738e2c4-e8a5-4a42-b16a-e040e769756e 0
+        powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 0012ee47-9041-4b5d-9b77-535fba8b1442 6738e2c4-e8a5-4a42-b16a-e040e769756e 0
+        powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 02f815b5-a5cf-4c84-bf20-649d1f75d3d8 4c793e7d-a264-42e1-87d3-7a0d2f523ccd 1
+        powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 02f815b5-a5cf-4c84-bf20-649d1f75d3d8 4c793e7d-a264-42e1-87d3-7a0d2f523ccd 1
+        powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 0d7dbae2-4294-402a-ba8e-26777e8488cd 309dce9b-bef4-4119-9921-a851fb12f0f4 0
+        powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 0d7dbae2-4294-402a-ba8e-26777e8488cd 309dce9b-bef4-4119-9921-a851fb12f0f4 0
+        powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 19cbb8fa-5279-450e-9fac-8a3d5fedd0c1 12bbebe6-58d6-4636-95bb-3217ef867c1a 0
+        powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 19cbb8fa-5279-450e-9fac-8a3d5fedd0c1 12bbebe6-58d6-4636-95bb-3217ef867c1a 0
+        powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 238c9fa8-0aad-41ed-83f4-97be242c8f20 29f6c1db-86da-48c5-9fdb-f2b67b1f44da 0
+        powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 238c9fa8-0aad-41ed-83f4-97be242c8f20 29f6c1db-86da-48c5-9fdb-f2b67b1f44da 0
+        powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 238c9fa8-0aad-41ed-83f4-97be242c8f20 94ac6d29-73ce-41a6-809f-6363ba21b47e 0
+        powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 238c9fa8-0aad-41ed-83f4-97be242c8f20 94ac6d29-73ce-41a6-809f-6363ba21b47e 0
+        powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 238c9fa8-0aad-41ed-83f4-97be242c8f20 9d7815a6-7ee4-497e-8888-515a05f02364 0
+        powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 238c9fa8-0aad-41ed-83f4-97be242c8f20 9d7815a6-7ee4-497e-8888-515a05f02364 0
+        powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 238c9fa8-0aad-41ed-83f4-97be242c8f20 bd3b718a-0680-4d9d-8ab2-e1d2b4ac806d 0
+        powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 238c9fa8-0aad-41ed-83f4-97be242c8f20 bd3b718a-0680-4d9d-8ab2-e1d2b4ac806d 0
+        powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 2a737441-1930-4402-8d77-b2bebba308a3 48e6b7a6-50f5-4782-a5d4-53bb8f07e226 1
+        powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 2a737441-1930-4402-8d77-b2bebba308a3 48e6b7a6-50f5-4782-a5d4-53bb8f07e226 1
+        powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 4f971e89-eebd-4455-a8de-9e59040e7347 5ca83367-6e45-459f-a27b-476b1d01c936 0
+        powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 4f971e89-eebd-4455-a8de-9e59040e7347 5ca83367-6e45-459f-a27b-476b1d01c936 0
+        powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 4f971e89-eebd-4455-a8de-9e59040e7347 7648efa3-dd9c-4e3e-b566-50f929386280 3
+        powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 4f971e89-eebd-4455-a8de-9e59040e7347 7648efa3-dd9c-4e3e-b566-50f929386280 3
+        powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 4f971e89-eebd-4455-a8de-9e59040e7347 96996bc0-ad50-47ec-923b-6f41874dd9eb 0
+        powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 4f971e89-eebd-4455-a8de-9e59040e7347 96996bc0-ad50-47ec-923b-6f41874dd9eb 0
+        powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 4f971e89-eebd-4455-a8de-9e59040e7347 a7066653-8d6c-40a8-910e-a1f54b84c7e5 2
+        powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 4f971e89-eebd-4455-a8de-9e59040e7347 a7066653-8d6c-40a8-910e-a1f54b84c7e5 2
+        powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 501a4d13-42af-4429-9fd1-a8218c268e20 ee12f906-d277-404b-b6da-e5fa1a576df5 1
+        powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 501a4d13-42af-4429-9fd1-a8218c268e20 ee12f906-d277-404b-b6da-e5fa1a576df5 1
+        powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 54533251-82be-4824-96c1-47b60b740d00 893dee8e-2bef-41e0-89c6-b55d0929964c 1
+        powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 54533251-82be-4824-96c1-47b60b740d00 893dee8e-2bef-41e0-89c6-b55d0929964c 1
+        powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 54533251-82be-4824-96c1-47b60b740d00 bc5038f7-23e0-4960-96da-33abaf5935ec 100
+        powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 54533251-82be-4824-96c1-47b60b740d00 bc5038f7-23e0-4960-96da-33abaf5935ec 100
+        powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 54533251-82be-4824-96c1-47b60b740d00 94d3a615-a899-4ac5-ae2b-e4d8f634367f 1
+        powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 54533251-82be-4824-96c1-47b60b740d00 94d3a615-a899-4ac5-ae2b-e4d8f634367f 1
+        powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 7516b95f-f776-4464-8c53-06167f40cc99 fbd9aa66-9553-4097-ba44-ed6e9d65eab8 1
+        powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 7516b95f-f776-4464-8c53-06167f40cc99 fbd9aa66-9553-4097-ba44-ed6e9d65eab8 1
+        powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 7516b95f-f776-4464-8c53-06167f40cc99 17aaa29b-8b43-4b94-aafe-35f64daaf1ee 0
+        powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 7516b95f-f776-4464-8c53-06167f40cc99 17aaa29b-8b43-4b94-aafe-35f64daaf1ee 0
+        powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 7516b95f-f776-4464-8c53-06167f40cc99 3c0bc021-c8a8-4e07-a973-6b14cbcb2b7e 2700
+        powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 7516b95f-f776-4464-8c53-06167f40cc99 3c0bc021-c8a8-4e07-a973-6b14cbcb2b7e 1800
+        powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 7516b95f-f776-4464-8c53-06167f40cc99 aded5e82-b909-4619-9949-f5d71dac0bcb 100
+        powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 7516b95f-f776-4464-8c53-06167f40cc99 aded5e82-b909-4619-9949-f5d71dac0bcb 75
+        powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 7516b95f-f776-4464-8c53-06167f40cc99 f1fbfde2-a960-4165-9f88-50667911ce96 75
+        powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 7516b95f-f776-4464-8c53-06167f40cc99 f1fbfde2-a960-4165-9f88-50667911ce96 50
+        powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 9596fb26-9850-41fd-ac3e-f7c3c00afd4b 03680956-93bc-4294-bba6-4e0f09bb717f 2
+        powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 9596fb26-9850-41fd-ac3e-f7c3c00afd4b 03680956-93bc-4294-bba6-4e0f09bb717f 2
+        powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 9596fb26-9850-41fd-ac3e-f7c3c00afd4b 34c7b99f-9a6d-4b3c-8dc7-b6693b78cef4 1
+        powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 9596fb26-9850-41fd-ac3e-f7c3c00afd4b 34c7b99f-9a6d-4b3c-8dc7-b6693b78cef4 1
+        powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c e73a048d-bf27-4f12-9731-8b2076e8891f 637ea02f-bbcb-4015-8e2c-a1c7b9c0b546 3
+        powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c e73a048d-bf27-4f12-9731-8b2076e8891f 637ea02f-bbcb-4015-8e2c-a1c7b9c0b546 3
+        powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c e73a048d-bf27-4f12-9731-8b2076e8891f 9a66d8d7-4ff7-4ef9-b5a2-5a326ca2a469 5
+        powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c e73a048d-bf27-4f12-9731-8b2076e8891f 9a66d8d7-4ff7-4ef9-b5a2-5a326ca2a469 5
+        powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c e73a048d-bf27-4f12-9731-8b2076e8891f 8183ba9a-e910-48da-8769-14ae6dc1170a 10
+        powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c e73a048d-bf27-4f12-9731-8b2076e8891f 8183ba9a-e910-48da-8769-14ae6dc1170a 10
+        powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c e73a048d-bf27-4f12-9731-8b2076e8891f bcded951-187b-4d05-bccc-f7e51960c258 1
+        powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c e73a048d-bf27-4f12-9731-8b2076e8891f bcded951-187b-4d05-bccc-f7e51960c258 1
+        powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c e73a048d-bf27-4f12-9731-8b2076e8891f d8742dcb-3e6a-4b3c-b3fe-374623cdcf06 3
+        powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c e73a048d-bf27-4f12-9731-8b2076e8891f d8742dcb-3e6a-4b3c-b3fe-374623cdcf06 3
+        powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c e73a048d-bf27-4f12-9731-8b2076e8891f f3c5027d-cd16-4930-aa6b-90db844a8f00 3
+        powercfg -setdcvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c e73a048d-bf27-4f12-9731-8b2076e8891f f3c5027d-cd16-4930-aa6b-90db844a8f00 3   
+#>    
+    # Set Power Plan to High Performance
             powercfg /s 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
         # hibernate off
             powercfg -h off
@@ -92,40 +152,6 @@ function Prep-Tablet {
   # Add Domain Users to Local Admin
     Add-LocalGroupMember -Group Administrators -Member "$env:USERDNSDOMAIN\Domain Users"
     Write-Host "Domain Users added to Local Admins"
-  # Install WinGet
-    # Install the latest package from GitHub
-    # Check PS Version
-    If ($PSVersionTable.PSVersion.Major -eq 7) {Write-Warning "This command does not work in PowerShell 7. You must install in Windows PowerShell."
-    Return}
-    # Test for requirement
-    $Requirement = Get-AppPackage "Microsoft.DesktopAppInstaller"
-        If (-Not $requirement) {Write-Verbose "Installing Desktop App Installer requirement"
-        Try {Add-AppxPackage -Path "https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx" -erroraction Stop}
-        Catch {Throw $_}}
-    $uri = "https://api.github.com/repos/microsoft/winget-cli/releases"
-
-    Try {Write-Verbose "[$((Get-Date).TimeofDay)] Getting information from $uri"
-    $get = Invoke-RestMethod -uri $uri -Method Get -ErrorAction stop
-        Write-Verbose "[$((Get-Date).TimeofDay)] getting latest release"
-        #$data = $get | Select-Object -first 1
-        $data = $get[0].assets | Where-Object name -Match 'msixbundle'
-
-        $appx = $data.browser_download_url
-        #$data.assets[0].browser_download_url
-        Write-Verbose "[$((Get-Date).TimeofDay)] $appx"
-        If ($pscmdlet.ShouldProcess($appx, "Downloading asset")) {
-        $file = Join-Path -path $env:temp -ChildPath $data.name
-        Write-Verbose "[$((Get-Date).TimeofDay)] Saving to $file"
-        Invoke-WebRequest -Uri $appx -UseBasicParsing -DisableKeepAlive -OutFile $file
-        Write-Verbose "[$((Get-Date).TimeofDay)] Adding Appx Package"
-        Add-AppxPackage -Path $file -ErrorAction Stop
-        If ($passthru) {Get-AppxPackage microsoft.desktopAppInstaller}}} 
-    #Try
-        Catch {
-        Write-Verbose "[$((Get-Date).TimeofDay)] There was an error."
-        Throw $_}
-        Write-Verbose "[$((Get-Date).TimeofDay)] Ending $($myinvocation.mycommand)"
-
   # Install Chocolatey
     [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
   # Whitelist G10 directory (Deprecated but relevant where 2.13 is requested)
@@ -157,6 +183,265 @@ function Prep-Tablet {
       # Install Pulseway Agent
       Start-Process -FilePath "C:\Admin\G10\LESGC Tablets.msi" -Wait
 }
+function Prep-Pulseway {
+    # Pulseway Prep
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name ComputerName -Value "LGOC - PrepSystem1 ()"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name GroupName    -Value "Liftsafe Group - Systems - Prep"
+    # Custom Pulseway Settings
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name UseCustomServer -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name EnableSystemTrayIcon -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name MonitorAD -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name MonitorIIS -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name EnableLock -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name EnableLogin -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name EnableLogoff -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name EnableRestart -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name EnableShutDown -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name EnablePowerOff -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name EnableSuspend -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name EnableHibernate -Value "0"
+    # Force commands
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name ForceLogoff -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name ForceRestart -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name ForceShutDown -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name ForcePowerOff -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name ForceSuspend -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name ForceHibernate -Value "1"
+        
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name ExcludeKnownSystemProcesses -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name EventsPerPage -Value "50"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name UnitOfMeasure -Value "1"
+    # Notifications
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationWhenOffline -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationWhenIPChanged -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnStartUp -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnShutDown -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnSuspend -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnWakeUp -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnLowBattery -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnServiceStop -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name NotificationOnServiceStopMinutes -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnLowMemory -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name LowMemoryPercentage -Value "10"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name LowMemoryTimeInterval -Value "10"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnCPUUsage -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name CPUUsagePercentage -Value "90"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name CPUUsageTimeInterval -Value "5"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnBelowCPUUsage -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name BelowCPUUsagePercentage -Value "10"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name BelowCPUUsageTimeInterval -Value "5"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnLowHDDSpace -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnUserLogin -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnUserLogout -Value "0"
+    # Connectivity
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name MonitorPing -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PingServer -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnSSLCertificateExpiration -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name NotificationOnSSLCertificateExpirationDays -Value "7"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnWebSiteNotAvailable -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name NotificationOnWebSiteNotAvailableMinutes -Value "5"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnPortNotAccessible -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PortInterval -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name AutoUpdate -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name IncreaseProcessPriority -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name UseHighPriority -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name ErrorReporting -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PluginDebugLog -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name KeepHardwareHistory -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnHardware -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisableHardDiskMonitoring -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnEventLogFilters -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnPingResponses -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnWindowsUpdates -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnWindowsUpdatesIgnoreImportant -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnApplicationInstall -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnApplicationUninstall -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnUSBDeviceInsert -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnUSBDeviceRemove -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnSMARTWarning -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnAntivirusDisabled -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnAntivirusOutOfDate -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnFirewallDisabled -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name OptimizeMemory -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name WakeOnWANOverInternet -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name WakeOnWANOverInternetPort -Value "9"
+    # AD Configs
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnADUserLocked -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name ADRequireChangePasswordOnReset -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name KeepPerformanceCountersHistory -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnPerformanceCounters -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnProcesses -Value "0"
+    # SQL and SNMP Settings
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name MonitorSqlServer -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SqlServerServerName -Value "7R"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SqlServerInstanceName -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SqlServerUseWindowsAuthentication -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SqlServerUsername -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SqlServerUsernameCtrl -Value "C5"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SqlServerPassword -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SqlServerPasswordCtrl -Value "63"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SqlServerShowSystemDatabases -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnSqlServerLongQueryExecutionTime -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnSqlServerHighDatabaseSize -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SqlServerLongQueryExecutionTime -Value "30"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SqlServerHighDatabaseSize -Value "75"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnSqlQueryFilter -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendFileWatchNotifications -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name MonitorSNMP -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendSNMPNotifications -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name MonitorWindowsServerBackup -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnBackupFailure -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnBackupSuccess -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name MonitorWSUS -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name WSUSIncludeDownstreamComputers -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SendNotificationOnWSUSSynchronization -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PrioritySendNotificationOnWSUSSynchronization -Value "1"
+    # File Browser Settings
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name FileBrowsingEnabled -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name FileBrowsingIncludeHiddenFolders -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name FileBrowsingIncludeHiddenFiles -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name FilePreviewEnabled -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name EmailFilesEnabled -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name ZipEmailedFile -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name FileDeleteEnabled -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name EmailServerAddress -Value "smtp.office365.com"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name EmailServerPort -Value "587"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name EmailUseSSL -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name EmailAccountUsername -Value "helpdesk@liftsafeinspections.com"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name EmailAccountPassword -Value "q419Ox8udVSzSq"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name EmailAccountPasswordCtrl -Value "30"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name EmailFromEmailAddress -Value "helpdesk@liftsafeinspections.com"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name EmailFromName -Value "Liftsafe Group Support"
+    # RDP, PS, and Display Settings
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name EnableRemoteDesktop -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name RemoteDesktopAskUserPermission -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name RemoteDesktopUserPermissionDefaultAllow -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name EnableLiveScreen -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name EnableWebCam -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name EnableUserChat -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name EnableUserSupportRequest -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name RemoteControlAllowDisable -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisableUserSessionTask -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PowerShellUserImpersonation -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PowerShellUserImpersonationUsername -Value "administrator"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PowerShellUserImpersonationPassword -Value "LgocAdmin2430!"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PowerShellUserImpersonationPasswordCtrl -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PowerShellUserImpersonationDomain -Value "LIFTSAFEINSPECTIONS"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayCPU -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayMemory -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayIPAddress -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayPing -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayAssets -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayNotes -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayHardwareInformation -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayNetwork -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayPorts -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayPingResponses -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayHardDisks -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayPrinters -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayServices -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayProcesses -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayCertificates -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayWebSites -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayScheduledTasks -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayPerformanceCounters -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayUsers -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayUserChats -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayLiveScreen -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayWebCam -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayEventLog -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayTerminal -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayPowerShell -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayScripts -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayRemoteDesktop -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayActiveDirectory -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayExchange -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayHyperV -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayIIS -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplaySCOM -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplaySqlServer -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayWindowsServerBackup -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayVMware -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayXenServer -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayAmazon -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayAzure -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplaySNMP -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayWSUS -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayWindowsUpdates -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplaySecurity -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayInstalledApplications -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayPCMonitorVersion -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayLock -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayLogoff -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayRestart -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayShutDown -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayPowerOff -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplaySuspend -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayHibernate -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayWakeUp -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name DisplayMaintenanceMode -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name EnableSyslog -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SyslogServer -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SyslogPort -Value "14"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name EnableSyslogReport -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SyslogReportIntervalMinutes -Value "60"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name EnableSyslogProcessorReport -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name EnableSyslogMemoryReport -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name EnableSyslogDiskReport -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name EnableSyslogUsersReport -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name EnableSyslogNetworkReport -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name EnableSyslogPingReport -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name EnableSyslogPingResponseReport -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SyslogReportUseCustomServer -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SyslogReportCustomServer -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name SyslogReportCustomServerPort -Value "14"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name KAVLogLevel -Value "4"
+    # Priority Notifications
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PrioritySendNotificationOnStartUp -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PrioritySendNotificationOnShutDown -Value "2"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PrioritySendNotificationOnSuspend -Value "2"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PrioritySendNotificationOnWakeUp -Value "2"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PrioritySendNotificationOnLowBattery -Value "2"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PrioritySendNotificationOnUserLogin -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PrioritySendNotificationOnUserLogout -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PrioritySendNotificationOnWindowsUpdates -Value "4"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PrioritySendNotificationOnApplicationInstall -Value "2"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PrioritySendNotificationOnApplicationUninstall -Value "2"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PrioritySendNotificationOnUSBDeviceInsert -Value "2"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PrioritySendNotificationOnUSBDeviceRemove -Value "2"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PrioritySendNotificationOnSMARTWarning -Value "3"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PrioritySendNotificationOnFirewallDisabled -Value "2"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PrioritySendNotificationOnAntivirusDisabled -Value "2"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PrioritySendNotificationOnAntivirusOutOfDate -Value "2"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PrioritySendNotificationOnLowMemory -Value "2"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PrioritySendNotificationOnCPUUsage -Value "2"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PrioritySendNotificationOnBelowCPUUsage -Value "2"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PrioritySendNotificationOnPortNotAccessible -Value "3"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PrioritySendNotificationOnServiceStop -Value "3"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PrioritySendNotificationOnSSLCertificateExpiration -Value "2"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PrioritySendNotificationOnWebSiteNotAvailable -Value "3"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PrioritySendNotificationOnADUserLocked -Value "2"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PrioritySendNotificationOnBackupSuccess -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PrioritySendNotificationOnBackupFailure -Value "3"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PriorityMonitorVMwareAlarms -Value "2"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PrioritySendNotificationOnVMwareWarnings -Value "2"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PrioritySendNotificationOnAmazonAlarmsTriggered -Value "2"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PrioritySendNotificationOnERAClientThreat -Value "2"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PrioritySendNotificationOnSqlServerLongQueryExecutionTime -Value "2"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name PrioritySendNotificationOnSqlServerHighDatabaseSize -Value "2"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor" -Name WatchdogUninstallAttempted -Value "0"
+    # Help desk Widget
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor\Branding" -Name DisplayDetails -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor\Branding" -Name CustomTrayIcon -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor\Branding" -Name SupportInfoName -Value "Liftsafe Group Support"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor\Branding" -Name SupportInfoEmail -Value "helpdesk@liftsafegroup.com"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor\Branding" -Name SupportInfoPhone -Value "226-240-1514"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor\Branding" -Name SupportInfoWebsite -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor\Branding\CustomTrayMenuEntries" -Name Count -Value "1"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor\Branding\CustomTrayMenuEntries\Entry0" -Name Label -Value "Troubleshoot my issue"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor\Branding\CustomTrayMenuEntries\Entry0" -Name Type -Value "0"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\MMSOFT Design\PC Monitor\Branding\CustomTrayMenuEntries\Entry0" -Name Value -Value "https://liftsafegroup.pulseway.com/clientportal"
+}
 # Local User as Admin
 function Prep-Users-Localadmin {
     Add-LocalGroupMember -Group Administrators -Member "$env:USERDNSDOMAIN\Domain Users"
@@ -182,7 +467,10 @@ function Prep-User {
     Get-AppxPackage -allusers Microsoft.MicrosoftOfficeHub | Remove-AppxPackage
     # Prevent reinstall of default apps with new user
 	Get-AppXProvisionedPackage -Online | Remove-AppxProvisionedPackage -Online
-    #Clear-Host
+    Clear-Host
+
+    #Enable mapped drives on W11
+    Set-ItemProperty HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System -Name EnableLinkedConnections -Type Dword -Value 1 
     # Start Menu: Disable Bing Search Results
     Set-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search -Name BingSearchEnabled -Type DWord -Value 0
     # Change Explorer home screen back to "This PC"
@@ -217,10 +505,10 @@ function Prep-User {
 # Install .NET Framework
 function Prep-DotNET {
     Write-Verbose "Install .NET Framework" -Verbose
-    Add-WindowsCapability –Online -Name NetFx3~~~~
-    #Clear-Host
+    Add-WindowsCapability -Online -Name NetFx3~~~~
+    Clear-Host
     Write-Verbose ".NET Framework Install Complete" -Verbose
-    #Clear-Host
+    Clear-Host
 }
 ###############################
 # Application Installs
@@ -283,7 +571,6 @@ function Prep-LGOCShortcuts {
     $urlShortcut.TargetPath = "http://www.724webs.com/Liftsafe/"
     $urlShortcut.Save()
     Invoke-WebRequest -Uri "http://www.724webs.com/Liftsafe/PDFBuilder/publish.htm" -OutFile "C:\Admin\G10\PDFBuilder.exe"
-
 }
 # Delete desktop shortcuts (minus Google Chrome)
 function Prep-Clean-Shortcuts {
@@ -371,24 +658,26 @@ function Prep-DriveMaps {
 }
 function Show-Menu {
     param (
-           [string]$Title = 'Workstation Prep Menu'
+           [string]$Title = 'Workstation Prep Tool'
     )
-     #Clear-Host
+     Clear-Host
      Write-Host "================= $Title ================="
-     Write-Host "                                          "
+     Write-Host "               System Prep:               "
      Write-Host "[ENTER]: Domain PC Prep (All - No Reboot) "
-     Write-Host "                                          "
-     Write-Host "[1]: Full PC Prep                         "
-     Write-Host "[2]: User Prep                            "
+     Write-Host "[W]: Full PC Prep                         "
      Write-Host "[3]: Install Software                     "
      Write-Host "[4]: Install .NET Framework 3.5           "
      Write-Host "[5]: Run Windows Update                   "
      Write-Host "[6]: Install System Updater               "
      Write-Host "[7]: Install RMM Agent                    "
+     Write-Host "               User Prep:                 "
+     Write-Host "[U]: User Prep                            "
      Write-Host "                                          "
      Write-Host "           LGOC specific                  "
      Write-Host "[8]: Install BGInfo                       "
      Write-Host "[9]: Install G10                          "
+     Write-Host "[P]: Prep Pulseway                        "
+     Write-Host "[R]: Rename PC                            "
      Write-Host "[S]: LGOC Shortcuts                       "
      Write-Host "[X]: Re-Map Network Drives                "     
      Write-Host "[V]: Setup User VPN                       "
@@ -399,10 +688,8 @@ do { Show-Menu
         $input = Read-Host "Please make a selection"
         switch ($input){
         default {
-        #Clear-Host
-        $Prep_Select = Read-Host -Prompt "Workstation(W) or Tablet(T)"
-        $global:DivisionName = Read-host -prompt "Enter division name:"
-        Prep-PC-Name
+        Clear-Host
+        $Prep_Select = Read-Host -Prompt "Workstation(W) or Tablet(T)"        
         If ($Prep_Select -eq "W"){Prep-PC}
         ElseIf($Prep_Select -eq "T"){Prep-Tablet}
         Prep-User
@@ -413,11 +700,12 @@ do { Show-Menu
         Prep-Adobe
         Prep-DotNET
         Prep-Office
+        Prep-PC-Name
         Prep-WU
-} '1'<# Full PC Prep #> {
-    #Clear-Host
+} 'w'<# Full PC Prep #> {
+    Clear-Host
+    $global:DivisionName = Read-host -prompt "Enter division name:"
     $Prep_Select = Read-Host -Prompt "Is this a Workstation(W), or Tablet?(T)"
-    $reply_pladmin = Read-Host -Prompt "Add domain users to local admin?[Y/n]"
     $reply_adobe = Read-Host -Prompt "Install Adobe?[Y/n]"
     $reply_chrome = Read-Host -Prompt "Install Chrome?[Y/n]"
     $reply_office = Read-Host -Prompt "Install Office?[Y/n]"
@@ -429,9 +717,11 @@ do { Show-Menu
     ElseIf($Prep_Select -contains "T"){Prep-Tablet}
     Prep-User
     Prep-PC
+    Prep-PC-Name
     Prep-RMM-Install
     Prep-DotNET
-    If ($reply_pladmin -notmatch "[nN]"){Prep-Users-Localadmin}
+    Prep-Users-Localadmin
+    Prep-BGInfo
     If ($reply_sysupdate -notmatch "[nN]"){Prep-Updater}
     If ($reply_chrome -notmatch "[nN]"){Prep-Chrome}
     If ($reply_adobe -notmatch "[nN]"){Prep-Adobe}
@@ -441,14 +731,14 @@ do { Show-Menu
     If ($reply_wupdates -notmatch "[nN]"){Prep-WU}
     Write-Verbose "Installation Complete, please reboot system." -Verbose
 
-} '2'<# User Prep #> {
-    #Clear-Host
+} 'u'<# User Prep #> {
+    Clear-Host
     $reply_Clean = Read-Host -Prompt "Remove all desktop shortcuts minus Chrome?[Y/n]"
     If ($reply_Clean -notmatch "[nN]"){Prep-Clean-Shortcuts}
     Prep-User
-    #Clear-Host
+    Clear-Host
 } '3'<# Install Software #> {
-    #Clear-Host
+    Clear-Host
     $reply_adobe = Read-Host -Prompt "Install Adobe?[Y/n]"
     $reply_chrome = Read-Host -Prompt "Install Chrome?[Y/n]"
     $reply_sysupdate = Read-Host -Prompt "Install System Updater?[Y/n]"
@@ -460,39 +750,47 @@ do { Show-Menu
     if ( $reply_bginfo -notmatch "[nN]") {Prep-BGInfo}
     If ( $reply_office -notmatch "[nN]"){Prep-Office}
     Prep-Clean-Shortcuts
-    #Clear-Host
+    Clear-Host
 } '4'<# Install .NET Framework 3.5 #> {
-    #Clear-Host
+    Clear-Host
     Prep-DotNET
-    #Clear-Host
+    Clear-Host
 } '5'<# Run Windows Updates #>  {
-    #Clear-Host
+    Clear-Host
     Prep-WU
-    #Clear-Host
+    Clear-Host
 } '6'<# Install System Update #> {
-    #Clear-Host
+    Clear-Host
     Prep-Updater
-    #Clear-Host
+    Clear-Host
 } '7'<# Install RMM Agent #> {
-    #Clear-Host
+    Clear-Host
     Prep-RMM-Install
-    #Clear-Host
+    Clear-Host
 } '8'<# Install BGInfo #>{
-    #Clear-Host
+    Clear-Host
     Prep-BGInfo
-    #Clear-Host
+    Clear-Host
 } '9'<# Download G10, and run #> {
-    #Clear-Host
+    Clear-Host
     Prep-G10
-    #Clear-Host
-} 'X' <# Re-map network drives #>{
-    #Clear-Host
+    Clear-Host
+} 's' <# Create G10 shorcuts#>{
+    Clear-Host
+    Prep-LGOCShortcuts
+    Clear-Host
+} 'x' <# Re-map network drives #>{
+    Clear-Host
     Prep-DriveMaps
-    #Clear-Host
-} 'V' <# Setup user VPN, and create shorcut #> {
-    #Clear-Host
+    Clear-Host
+} 'v' <# Setup user VPN, and create shorcut #> {
+    Clear-Host
     Prep-VPN    
-    #Clear-Host
+    Clear-Host
+} 'r' <# Prompt user for Prefix and rename PC #>{
+    Prep-PC-Name
+} 'p' <# Pulseway configurations #> {
+    Prep-Pulseway
 } 'q' <#To close window#> {
             return
     }
